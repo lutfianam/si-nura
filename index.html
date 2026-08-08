@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Surat IPNU IPPNU | SI-NURA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- html2pdf.js for Client-side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'TrajanPro-Bold';
+            src: local('Trajan Pro Bold'), local('TrajanPro-Bold');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'Averta-Semibold';
+            src: local('Averta Semibold'), local('Averta-Semibold');
+            font-weight: 600;
+        }
+        @font-face {
+            font-family: 'Arial Narrow';
+            src: local('Arial Narrow'), local('ArialNarrow');
+            font-weight: normal;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        /* Kop Surat Custom Font */
+        .kop-font {
+            font-family: 'TrajanPro-Bold', 'Cinzel', 'Times New Roman', serif;
+            font-size: 14px;
+        }
+
+        /* Detail Sekretariat Font */
+        .detail-font {
+            font-family: 'Averta-Semibold', 'Plus Jakarta Sans', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        /* Surat Document Font Styling */
+        .surat-document {
+            font-family: 'Arial Narrow', 'Arial', sans-serif;
+            font-size: 12px;
+            color: #000;
+            line-height: 1.5;
+        }
+
+        /* NO garis bawah kop surat */
+        .kop-border {
+            display: none;
+        }
+
+        /* Print Optimization & Page Setup */
+        @page {
+            size: A4 portrait;
+            margin: 15mm 15mm 15mm 15mm;
+        }
+
+        @media print {
+            body {
+                background: none !important;
+                padding: 0 !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #printable-surat, #printable-surat * {
+                visibility: visible;
+            }
+            #printable-surat {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15mm 15mm 15mm 15mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+
+        /* Category label styling */
+        .category-label {
+            background: #f0fdf4;
+            color: #065f46;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        /* Signature block - langsung di bawah isi surat */
+        .signature-block {
+            margin-top: 30px;
+            padding-top: 10px;
+        }
+        
+        /* Container surat */
+        .surat-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <div id="app" class="flex flex-col flex-1">
+        
+        <!-- Navbar Header -->
+        <header class="bg-emerald-800 text-white shadow-md no-print sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-file-signature text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg md:text-xl leading-tight">Generator Surat IPNU IPPNU</h1>
+                        <p class="text-xs text-emerald-200">SI-NURA | Sistem Informasi Naskah & Undangan Resmi Administrasi</p>
+                    </div>
+                </div>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-2">
+                    <button @click="resetForm" class="text-xs bg-emerald-700 hover:bg-emerald-600 text-emerald-100 px-3 py-1.5 rounded flex items-center transition">
+                        <i class="fa-solid fa-rotate-left mr-1.5"></i> Reset
+                    </button>
+                    <button @click="saveProfile" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded flex items-center transition shadow">
+                        <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Profil
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- LEFT PANEL: Form Inputs -->
+            <div class="lg:col-span-6 space-y-4 no-print overflow-y-auto max-h-[calc(100vh-100px)] pr-1">
+                
+                <!-- Quick Preset Selection - Enhanced with Categories -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Preset Template Surat
+                    </label>
+                    <!-- UBAHAN: Menambahkan v-model agar dropdown terpilih otomatis sesuai default -->
+                    <select v-model="form.suratType" @change="loadPreset($event.target.value)" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">-- Pilih Jenis Surat --</option>
+                        
+                        <optgroup label="📩 Surat Permohonan & Undangan">
+                            <option value="undangan_rapat">📋 Surat Undangan Rapat</option>
+                            <option value="undangan_harlah">🎉 Surat Undangan Harlah</option>
+                            <option value="undangan_pembina">👨‍🏫 Surat Undangan Pembina</option>
+                            <option value="permohonan_pemateri">🎤 Permohonan Pemateri/Narasumber</option>
+                            <option value="permohonan_tempat">🏢 Permohonan Tempat/Fasilitas</option>
+                            <option value="permohonan_dana">💰 Permohonan Bantuan Dana</option>
+                            <option value="permohonan_rekomendasi">📜 Permohonan Rekomendasi/Dukungan</option>
+                        </optgroup>
+                        
+                        <optgroup label="⚖️ Surat Ketetapan & Legalitas">
+                            <option value="sp_pengesahan">✅ Surat Pengesahan (SP)</option>
+                            <option value="rekomendasi">📝 Surat Rekomendasi</option>
+                            <option value="mandat">🎯 Surat Mandat</option>
+                            <option value="surat_tugas">📋 Surat Tugas</option>
+                        </optgroup>
+                        
+                        <optgroup label="📢 Surat Pemberitahuan & Instruktif">
+                            <option value="pemberitahuan">📣 Surat Pemberitahuan</option>
+                            <option value="instruksi">⚡ Surat Instruksi</option>
+                            <option value="edaran">📰 Surat Edaran (SE)</option>
+                        </optgroup>
+                        
+                        <optgroup label="📄 Surat Keterangan & Administratif">
+                            <option value="keterangan_aktif">🪪 Surat Keterangan Aktif/Kader</option>
+                            <option value="spd">🧳 Surat Perjalanan Dinas (SPD)</option>
+                            <option value="balasan">📨 Surat Balasan/Jawaban</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Tab Control Form -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 overflow-x-auto">
+                        <button @click="activeTab = 'org'" :class="{'bg-white text-emerald-700 border-b-2 border-emerald-600': activeTab === 'org'}" class="px-4 py-3 flex-1 text-center whitespace-nowrap transition">
+                            <i class="fa-solid fa-sitemap mr-1"></i> Organisasi
+                        </button>
+                        <button @click="activeTab = 'meta'" :class="{'bg-white text-emerald-700 border-b-2 border-emerald-600': activeTab === 'meta'}" class="px-4 py-3 flex-1 text-center whitespace-nowrap transition">
+                            <i class="fa-solid fa-envelope-open-text mr-1"></i> Surat & Tujuan
+                        </button>
+                        <button @click="activeTab = 'body'" :class="{'bg-white text-emerald-700 border-b-2 border-emerald-600': activeTab === 'body'}" class="px-4 py-3 flex-1 text-center whitespace-nowrap transition">
+                            <i class="fa-solid fa-calendar-day mr-1"></i> Detail Acara
+                        </button>
+                        <button @click="activeTab = 'ttd'" :class="{'bg-white text-emerald-700 border-b-2 border-emerald-600': activeTab === 'ttd'}" class="px-4 py-3 flex-1 text-center whitespace-nowrap transition">
+                            <i class="fa-solid fa-pen-nib mr-1"></i> TTD & Legalitas
+                        </button>
+                    </div>
+
+                    <div class="p-4 space-y-4">
+                        
+                        <!-- TAB 1: Organisasi & Kop -->
+                        <div v-show="activeTab === 'org'" class="space-y-3">
+                            <div class="bg-emerald-50/60 p-3 rounded-lg border border-emerald-200">
+                                <label class="block text-xs font-bold text-emerald-800 mb-2">
+                                    <i class="fa-solid fa-image mr-1"></i> Upload Logo Custom (Opsional)
+                                </label>
+                                <p class="text-[11px] text-slate-600 mb-2">Sudah tersedia logo SVG standar. Jika memiliki file PNG logo IPNU/IPPNU sendiri, Anda dapat mengunggahnya di bawah ini:</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-medium text-slate-700 mb-1">Logo IPNU</label>
+                                        <input type="file" @change="uploadLogo($event, 'ipnu')" accept="image/*" class="text-[10px] w-full text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-100 file:text-emerald-700">
+                                        <button v-if="customLogoIpnu" @click="customLogoIpnu = null" class="text-[10px] text-red-600 underline mt-1">Hapus Logo IPNU Custom</button>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-medium text-slate-700 mb-1">Logo IPPNU</label>
+                                        <input type="file" @change="uploadLogo($event, 'ippnu')" accept="image/*" class="text-[10px] w-full text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-100 file:text-emerald-700">
+                                        <button v-if="customLogoIppnu" @click="customLogoIppnu = null" class="text-[10px] text-red-600 underline mt-1">Hapus Logo IPPNU Custom</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Tingkatan Kepengurusan</label>
+                                    <select v-model="form.tingkat" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                        <option value="PR">PIMPINAN RANTING</option>
+                                        <option value="PK">PIMPINAN KOMISARIAT</option>
+                                        <option value="PAC">PIMPINAN ANAK CABANG</option>
+                                        <option value="PC">PIMPINAN CABANG</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Nama Wilayah / Lembaga</label>
+                                    <input type="text" v-model="form.namaWilayah" placeholder="Contoh: KECAMATAN TEMBARAK" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Alamat Sekretariat</label>
+                                <textarea v-model="form.alamat" rows="2" placeholder="Alamat lengkap sekretariat..." class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Kontak / No. HP</label>
+                                    <input type="text" v-model="form.telepon" placeholder="085934823522 (Rekan Ulum)/ 08813903442 (Rekanita Trifka)" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Email Organisasi</label>
+                                    <input type="email" v-model="form.email" placeholder="ipnuippnutembarak@gmail.com" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Website / Blog</label>
+                                    <input type="text" v-model="form.website" placeholder="pelajarnutembarak.blogspot.com" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: Surat & Tujuan -->
+                        <div v-show="activeTab === 'meta'" class="space-y-3">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Nomor Surat</label>
+                                    <input type="text" v-model="form.nomorSurat" placeholder="014/PAC/A/XX/7354-7355/VII/2026" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Lampiran</label>
+                                    <input type="text" v-model="form.lampiran" placeholder="-" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Perihal</label>
+                                    <input type="text" v-model="form.perihal" placeholder="PERMOHONAN TIM KADERISASI" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Tujuan Surat (Kepada Yth.)</label>
+                                <textarea v-model="form.penerima" rows="2" placeholder="TIM KADERISASI PC IPNU IPPNU KAB. TEMANGGUNG" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Tempat Penerima</label>
+                                <input type="text" v-model="form.tempatPenerima" placeholder="di- tempat" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            
+                            <!-- Additional field for Surat Edaran / Instruksi -->
+                            <div v-if="form.suratType === 'edaran' || form.suratType === 'instruksi'">
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Tujuan Edaran/Instruksi (Kepada)</label>
+                                <textarea v-model="form.tujuanEdaran" rows="2" placeholder="Seluruh Pimpinan Anak Cabang IPNU IPPNU se-Kabupaten Temanggung" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: Detail Acara & Isi -->
+                        <div v-show="activeTab === 'body'" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Paragraf Pembuka / Jenis Kegiatan</label>
+                                <textarea v-model="form.paragrafPembuka" rows="3" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Hari Acara</label>
+                                    <input type="text" v-model="form.hariAcara" placeholder="Sabtu dan Minggu" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Tanggal Acara</label>
+                                    <input type="text" v-model="form.tanggalAcara" placeholder="25-26 Juli 2026" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Waktu Acara</label>
+                                    <input type="text" v-model="form.waktuAcara" placeholder="15.00 - Selesai" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Tempat Acara</label>
+                                    <input type="text" v-model="form.tempatAcara" placeholder="Gedung MWC NU Kecamatan Tembarak" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Paragraf Isi (Tambahan)</label>
+                                <textarea v-model="form.paragrafIsi" rows="2" placeholder="Isi tambahan untuk surat..." class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Paragraf Penutup</label>
+                                <textarea v-model="form.paragrafPenutup" rows="2" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+                            
+                            <!-- Additional fields for specific surat types -->
+                            <div v-if="form.suratType === 'spd'">
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Tujuan Perjalanan Dinas</label>
+                                <input type="text" v-model="form.tujuanPerjalanan" placeholder="Kota Surabaya, Jawa Timur" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                <label class="block text-xs font-medium text-slate-700 mt-2 mb-1">Lama Perjalanan</label>
+                                <input type="text" v-model="form.lamaPerjalanan" placeholder="3 (tiga) hari" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            
+                            <div v-if="form.suratType === 'keterangan_aktif'">
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Nama Kader yang Diketerangan</label>
+                                <input type="text" v-model="form.namaKader" placeholder="Muhammad Fikri Al-Ghifari" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                <label class="block text-xs font-medium text-slate-700 mt-2 mb-1">Status / Jabatan</label>
+                                <input type="text" v-model="form.statusKader" placeholder="Pengurus IPNU / Alumni MAKESTA" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: TTD & Legalitas -->
+                        <div v-show="activeTab === 'ttd'" class="space-y-3">
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Kota Pembuatan</label>
+                                    <input type="text" v-model="form.kotaSurat" placeholder="Temanggung" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Tgl Hijriah</label>
+                                    <input type="text" v-model="form.tglHijriah" placeholder="29 Muharam 1448 H" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Tgl Masehi</label>
+                                    <input type="text" v-model="form.tglMasehi" placeholder="15 Juli 2026 M" class="w-full text-xs border border-slate-300 rounded p-2 focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                            </div>
+
+                            <hr class="border-slate-200 my-2">
+
+                            <!-- IPNU -->
+                            <div class="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
+                                <span class="text-xs font-bold text-emerald-800 block mb-2"><i class="fa-solid fa-user-tie mr-1"></i> Pengurus IPNU</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Nama Ketua IPNU</label>
+                                        <input type="text" v-model="form.ketuaIpnu" placeholder="LUTFI ANAM" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-600 mb-1">NIA IPNU</label>
+                                        <input type="text" v-model="form.niaIpnu" placeholder="NIA. 11.19.03.00081" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IPPNU -->
+                            <div class="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
+                                <span class="text-xs font-bold text-emerald-800 block mb-2"><i class="fa-solid fa-user-nurse mr-1"></i> Pengurus IPPNU</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Nama Ketua IPPNU</label>
+                                        <input type="text" v-model="form.ketuaIppnu" placeholder="EMA AMALIA SHALIHA" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-600 mb-1">NIA IPPNU</label>
+                                        <input type="text" v-model="form.niaIppnu" placeholder="NIA. 332325050066" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Signer for SP / Rekomendasi -->
+                            <div v-if="form.suratType === 'sp_pengesahan' || form.suratType === 'rekomendasi'">
+                                <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-200">
+                                    <span class="text-xs font-bold text-amber-800 block mb-2"><i class="fa-solid fa-scale-balanced mr-1"></i> Penandatangan Tambahan</span>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-600 mb-1">Jabatan Penandatangan</label>
+                                            <input type="text" v-model="form.jabatanTambahan" placeholder="Ketua PC IPNU" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-600 mb-1">Nama Penandatangan</label>
+                                            <input type="text" v-model="form.namaTambahan" placeholder="Dr. KH. Ahmad Zaini, M.Ag" class="w-full text-xs border border-slate-300 rounded p-1.5 bg-white">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload TTD & Stempel Digital -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-700">Digital TTD & Stempel Overlay</span>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" v-model="form.useDigitalSign" class="sr-only peer">
+                                        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                                    </label>
+                                </div>
+                                <p class="text-[11px] text-slate-500">Aktifkan untuk menyertakan gambar tanda tangan / stempel langsung pada pratinjau.</p>
+                                
+                                <div v-if="form.useDigitalSign" class="grid grid-cols-2 gap-2 pt-2">
+                                    <div>
+                                        <label class="block text-[10px] text-slate-600 mb-1">Gambar TTD/Stempel IPNU</label>
+                                        <input type="file" @change="uploadSign($event, 'signIpnu')" accept="image/*" class="text-[10px] w-full text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-100 file:text-emerald-700">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-600 mb-1">Gambar TTD/Stempel IPPNU</label>
+                                        <input type="file" @change="uploadSign($event, 'signIppnu')" accept="image/*" class="text-[10px] w-full text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-100 file:text-emerald-700">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Export Action Buttons -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-2">
+                    <button @click="downloadPdf" :disabled="isGeneratingPdf" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 px-3 rounded-lg flex items-center justify-center transition shadow text-xs md:text-sm disabled:opacity-50">
+                        <i v-if="!isGeneratingPdf" class="fa-solid fa-file-pdf mr-2"></i>
+                        <i v-else class="fa-solid fa-spinner fa-spin mr-2"></i>
+                        {{ isGeneratingPdf ? 'Memproses PDF...' : 'Download PDF' }}
+                    </button>
+                    <button @click="printSurat" class="flex-1 bg-slate-700 hover:bg-slate-800 text-white font-semibold py-2.5 px-3 rounded-lg flex items-center justify-center transition shadow text-xs md:text-sm">
+                        <i class="fa-solid fa-print mr-2"></i> Cetak Langsung
+                    </button>
+                    <button @click="downloadDocx" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-3 rounded-lg flex items-center justify-center transition shadow text-xs md:text-sm">
+                        <i class="fa-solid fa-file-word mr-2"></i> Download DOCX
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Live Document Paper Preview -->
+            <div class="lg:col-span-6 flex justify-center items-start">
+                
+                <div class="w-full max-w-[210mm] bg-white shadow-xl rounded-sm p-6 md:p-8 surat-document border border-slate-200 min-h-[297mm] flex flex-col" id="printable-surat">
+                    
+                    <div class="surat-container">
+                        <!-- Kop Surat -->
+                        <div>
+                            <!-- Kop Surat Official IPNU IPPNU Layout -->
+                            <div class="flex items-start justify-between pb-1">
+                                
+                                <!-- Logos Container -->
+                                <div class="flex items-center space-x-2 pt-1 flex-shrink-0">
+                                    <!-- Logo IPNU -->
+                                    <div class="w-20 h-20 flex items-center justify-center">
+                                        <img v-if="customLogoIpnu" :src="customLogoIpnu" class="max-h-20 max-w-full object-contain">
+                                        <!-- High Accuracy SVG IPNU Logo -->
+                                        <svg v-else viewBox="0 0 200 200" class="w-full h-full">
+                                            <circle cx="100" cy="100" r="96" fill="#facc15" />
+                                            <circle cx="100" cy="100" r="84" fill="#006837" />
+                                            <circle cx="100" cy="100" r="80" fill="none" stroke="#ffffff" stroke-width="2.5" />
+                                            <path id="ipnu-text-path" d="M 40 78 A 65 65 0 0 1 160 78" fill="none" />
+                                            <text font-family="Arial, sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">
+                                                <textPath href="#ipnu-text-path" startOffset="50%">≡ I.P.N.U. ≡</textPath>
+                                            </text>
+                                            <polygon points="100,72 104,82 115,82 106,88 109,98 100,92 91,98 94,88 85,82 96,82" fill="#facc15" />
+                                            <polygon points="76,82 78,88 85,88 80,92 82,98 76,94 70,98 72,92 67,88 74,88" fill="#facc15" transform="scale(0.8) translate(20,20)"/>
+                                            <polygon points="56,92 58,97 64,97 60,100 61,105 56,102 51,105 53,100 48,97 54,97" fill="#facc15" transform="scale(0.8) translate(15,25)"/>
+                                            <polygon points="78,102 80,107 86,107 81,110 83,115 78,112 73,115 75,110 70,107 76,107" fill="#facc15" transform="scale(0.8) translate(22,25)"/>
+                                            <polygon points="90,118 92,122 97,122 93,125 94,129 90,127 86,129 87,125 83,122 88,122" fill="#facc15" transform="scale(0.7) translate(30,30)"/>
+                                            <polygon points="124,82 126,88 133,88 128,92 130,98 124,94 118,98 120,92 115,88 122,88" fill="#facc15" transform="scale(0.8) translate(30,20)"/>
+                                            <polygon points="144,92 146,97 152,97 148,100 149,105 144,102 139,105 141,100 136,97 142,97" fill="#facc15" transform="scale(0.8) translate(35,25)"/>
+                                            <polygon points="122,102 124,107 130,107 125,110 127,115 122,112 117,115 119,110 114,107 120,107" fill="#facc15" transform="scale(0.8) translate(28,25)"/>
+                                            <polygon points="110,118 112,122 117,122 113,125 114,129 110,127 106,129 107,125 103,122 108,122" fill="#facc15" transform="scale(0.7) translate(28,30)"/>
+                                            <rect x="90" y="112" width="20" height="26" fill="#ffffff" rx="2" stroke="#006837" stroke-width="1.5" />
+                                            <line x1="100" y1="112" x2="100" y2="138" stroke="#006837" stroke-width="1.5" />
+                                            <line x1="94" y1="118" x2="98" y2="118" stroke="#006837" stroke-width="1" />
+                                            <line x1="94" y1="123" x2="98" y2="123" stroke="#006837" stroke-width="1" />
+                                            <line x1="102" y1="118" x2="106" y2="118" stroke="#006837" stroke-width="1" />
+                                            <line x1="102" y1="123" x2="106" y2="123" stroke="#006837" stroke-width="1" />
+                                            <g fill="#ffffff" stroke="#ffffff">
+                                                <path d="M 38 98 C 55 120 75 138 108 156 L 100 152 C 70 136 50 116 38 98 Z" />
+                                                <path d="M 162 98 C 145 120 125 138 92 156 L 100 152 C 130 136 150 116 162 98 Z" />
+                                            </g>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Logo IPPNU -->
+                                    <div class="w-20 h-20 flex items-center justify-center">
+                                        <img v-if="customLogoIppnu" :src="customLogoIppnu" class="max-h-20 max-w-full object-contain">
+                                        <!-- High Accuracy SVG IPPNU Logo -->
+                                        <svg v-else viewBox="0 0 200 200" class="w-full h-full">
+                                            <polygon points="100,6 194,192 6,192" fill="#facc15" />
+                                            <polygon points="100,18 184,184 16,184" fill="#006837" />
+                                            <polygon points="100,28 174,176 26,176" fill="none" stroke="#ffffff" stroke-width="2.5" />
+                                            <polygon points="100,34 102,40 108,40 103,44 105,50 100,46 95,50 97,44 92,40 98,40" fill="#facc15" />
+                                            <polygon points="90,52 92,57 97,57 93,60 94,65 90,62 86,65 87,60 83,57 88,57" fill="#facc15" transform="scale(0.8) translate(18,10)"/>
+                                            <polygon points="110,52 112,57 117,57 113,60 114,65 110,62 106,65 107,60 103,57 108,57" fill="#facc15" transform="scale(0.8) translate(28,10)"/>
+                                            <polygon points="80,70 82,75 87,75 83,78 84,83 80,80 76,83 77,78 73,75 78,75" fill="#facc15" transform="scale(0.8) translate(15,18)"/>
+                                            <polygon points="120,70 122,75 127,75 123,78 124,83 120,80 116,83 117,78 113,75 118,75" fill="#facc15" transform="scale(0.8) translate(30,18)"/>
+                                            <polygon points="70,88 72,93 77,93 73,96 74,101 70,98 66,101 67,96 63,93 68,93" fill="#facc15" transform="scale(0.8) translate(12,26)"/>
+                                            <polygon points="130,88 132,93 137,93 133,96 134,101 130,98 126,101 127,96 123,93 128,93" fill="#facc15" transform="scale(0.8) translate(33,26)"/>
+                                            <polygon points="60,106 62,111 67,111 63,114 64,119 60,116 56,119 57,114 53,111 58,111" fill="#facc15" transform="scale(0.8) translate(10,34)"/>
+                                            <polygon points="140,106 142,111 147,111 143,114 144,119 140,116 136,119 137,114 133,111 138,111" fill="#facc15" transform="scale(0.8) translate(35,34)"/>
+                                            <rect x="90" y="104" width="20" height="24" fill="#ffffff" rx="2" stroke="#006837" stroke-width="1.5" />
+                                            <line x1="100" y1="104" x2="100" y2="128" stroke="#006837" stroke-width="1.5" />
+                                            <g fill="#ffffff">
+                                                <path d="M 46 118 C 62 134 78 146 108 158 L 100 154 C 74 142 58 130 46 118 Z" />
+                                                <path d="M 154 118 C 138 134 122 146 92 158 L 100 154 C 126 142 142 130 154 118 Z" />
+                                            </g>
+                                            <text x="100" y="171" font-family="Arial, sans-serif" font-weight="900" font-size="16" fill="#ffffff" text-anchor="middle">I.P.P.N.U.</text>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Header Text Right Aligned -->
+                                <div class="text-right flex-1 pl-4 uppercase font-bold text-[#0e8a44] kop-font leading-tight">
+                                    <div class="text-[14px] tracking-wider text-[#0e8a44]">
+                                        <span v-if="form.tingkat === 'PR'">PIMPINAN RANTING</span>
+                                        <span v-else-if="form.tingkat === 'PK'">PIMPINAN KOMISARIAT</span>
+                                        <span v-else-if="form.tingkat === 'PAC'">PIMPINAN ANAK CABANG</span>
+                                        <span v-else-if="form.tingkat === 'PC'">PIMPINAN CABANG</span>
+                                    </div>
+                                    <div class="text-[16px] font-extrabold text-[#0e8a44] tracking-tight">IKATAN PELAJAR NAHDLATUL ULAMA</div>
+                                    <div class="text-[16px] font-extrabold text-[#0e8a44] tracking-tight">IKATAN PELAJAR PUTRI NAHDLATUL ULAMA</div>
+                                    <div class="text-[15px] font-extrabold text-[#0e8a44] tracking-wide">{{ form.namaWilayah }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Address & Contact info -->
+                            <div class="text-right detail-font text-[9px] text-black leading-snug mt-1 space-y-0.5">
+                                <div>{{ form.alamat }}</div>
+                                <div v-if="form.telepon" class="flex items-center justify-end gap-1">
+                                    <span>{{ form.telepon }}</span>
+                                    <i class="fa-brands fa-whatsapp text-emerald-600 text-[10px]"></i>
+                                </div>
+                                <div v-if="form.email" class="flex items-center justify-end gap-1">
+                                    <span class="underline">{{ form.email }}</span>
+                                    <i class="fa-regular fa-envelope text-emerald-600 text-[10px]"></i>
+                                </div>
+                                <div v-if="form.website" class="flex items-center justify-end gap-1">
+                                    <span class="underline">{{ form.website }}</span>
+                                    <i class="fa-solid fa-globe text-emerald-600 text-[10px]"></i>
+                                </div>
+                            </div>
+
+                            <!-- TIDAK ADA GARIS BAWAH KOP SURAT -->
+                            
+                            <!-- Metadata Surat Section -->
+                            <div class="mt-3 mb-3 text-[12px]">
+                                <table class="w-full max-w-md">
+                                    <tr>
+                                        <td class="w-20">Nomor</td>
+                                        <td class="w-4">:</td>
+                                        <td>{{ form.nomorSurat || '...' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lampiran</td>
+                                        <td>:</td>
+                                        <td>{{ form.lampiran || '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Perihal</td>
+                                        <td>:</td>
+                                        <td class="font-bold uppercase tracking-wide">{{ form.perihal || '...' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Container Isi Surat -->
+                            <div class="pl-24 space-y-3 text-[12px] mt-3">
+                                
+                                <!-- Posisi Kepada Yth -->
+                                <div>
+                                    <div>Kepada Yth.</div>
+                                    <div class="font-bold underline uppercase whitespace-pre-line">{{ form.penerima || '...' }}</div>
+                                    <div>{{ form.tempatPenerima || 'di- tempat' }}</div>
+                                </div>
+
+                                <!-- Tujuan Edaran -->
+                                <div v-if="form.suratType === 'edaran' || form.suratType === 'instruksi'">
+                                    <div class="font-bold underline uppercase">Kepada:</div>
+                                    <div class="whitespace-pre-line">{{ form.tujuanEdaran || '...' }}</div>
+                                </div>
+
+                                <!-- Salam Pembuka -->
+                                <div>
+                                    <p class="italic">Assalamu'alaikum warahmatullahi wabarakatuh</p>
+                                    <p class="italic">Bismillahirrahmanirrahim</p>
+                                </div>
+
+                                <!-- Body Paragraphs -->
+                                <div class="space-y-3 text-justify leading-relaxed">
+                                    <p>{{ form.paragrafPembuka }}</p>
+
+                                    <!-- Khusus Surat Keterangan Aktif -->
+                                    <div v-if="form.suratType === 'keterangan_aktif'" class="bg-slate-50 p-3 border border-slate-200 rounded my-2">
+                                        <p class="font-semibold">Dengan ini menerangkan bahwa:</p>
+                                        <table class="w-full mt-2">
+                                            <tr>
+                                                <td class="w-28">Nama</td>
+                                                <td class="w-4">:</td>
+                                                <td class="font-bold">{{ form.namaKader || '_________________' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Status</td>
+                                                <td>:</td>
+                                                <td>{{ form.statusKader || '_________________' }}</td>
+                                            </tr>
+                                        </table>
+                                        <p class="mt-2">Adalah benar-benar kader aktif IPNU IPPNU dan berhak menggunakan status tersebut untuk keperluan yang bersangkutan.</p>
+                                    </div>
+
+                                    <!-- Khusus SPD -->
+                                    <div v-if="form.suratType === 'spd'">
+                                        <p>Yang bertanda tangan di bawah ini memberikan izin perjalanan dinas kepada:</p>
+                                        <table class="w-full mt-2">
+                                            <tr>
+                                                <td class="w-28">Nama</td>
+                                                <td class="w-4">:</td>
+                                                <td>{{ form.namaKader || '_________________' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jabatan</td>
+                                                <td>:</td>
+                                                <td>{{ form.statusKader || '_________________' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tujuan</td>
+                                                <td>:</td>
+                                                <td>{{ form.tujuanPerjalanan || '_________________' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lama</td>
+                                                <td>:</td>
+                                                <td>{{ form.lamaPerjalanan || '_________________' }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <p v-html="form.paragrafIsi"></p>
+
+                                    <!-- Agenda Details -->
+                                    <div class="my-3 pl-8" v-if="form.hariAcara || form.tanggalAcara || form.waktuAcara || form.tempatAcara">
+                                        <table class="w-full border-collapse">
+                                            <tr class="align-top">
+                                                <td class="w-20">Hari</td>
+                                                <td class="w-4">:</td>
+                                                <td class="font-medium">{{ form.hariAcara || '-' }}</td>
+                                            </tr>
+                                            <tr class="align-top">
+                                                <td>Tanggal</td>
+                                                <td>:</td>
+                                                <td class="font-medium">{{ form.tanggalAcara || '-' }}</td>
+                                            </tr>
+                                            <tr class="align-top">
+                                                <td>Waktu</td>
+                                                <td>:</td>
+                                                <td class="font-medium">{{ form.waktuAcara || '-' }}</td>
+                                            </tr>
+                                            <tr class="align-top">
+                                                <td>Tempat</td>
+                                                <td>:</td>
+                                                <td class="font-medium">{{ form.tempatAcara || '-' }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <p>{{ form.paragrafPenutup }}</p>
+
+                                    <!-- Salam Penutup -->
+                                    <div class="mt-3 space-y-0.5">
+                                        <p class="italic">
+                                            Wallahulmuwaffiq illaa aqwamiittharieq
+                                        </p>
+                                        <p class="italic">Wassalamu'alaikum warahmatullahi wabarakatuh</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Signature Block - LANGSUNG DI BAWAH ISI SURAT -->
+                        <div class="signature-block">
+                            <!-- Date -->
+                            <div class="text-right mb-4 text-[12px]">
+                                <span>{{ form.kotaSurat }}, </span>
+                                <span class="underline">{{ form.tglHijriah }}</span><br>
+                                <span>{{ form.tglMasehi }}</span>
+                            </div>
+
+                            <!-- Signature block title -->
+                            <div class="text-center font-bold uppercase text-[11px] leading-tight mb-4">
+                                MENGETAHUI,<br>
+                                <span v-if="form.tingkat === 'PR'">PIMPINAN RANTING</span>
+                                <span v-else-if="form.tingkat === 'PK'">PIMPINAN KOMISARIAT</span>
+                                <span v-else-if="form.tingkat === 'PAC'">PIMPINAN ANAK CABANG</span>
+                                <span v-else-if="form.tingkat === 'PC'">PIMPINAN CABANG</span><br>
+                                IKATAN PELAJAR NAHDLATUL ULAMA<br>
+                                IKATAN PELAJAR PUTRI NAHDLATUL ULAMA<br>
+                                {{ form.namaWilayah }}
+                            </div>
+
+                            <!-- Table TTD 2 Sisi -->
+                            <div class="grid grid-cols-2 gap-4 text-center mt-4">
+                                
+                                <!-- Side IPNU -->
+                                <div class="flex flex-col items-center justify-between h-32">
+                                    <div class="font-bold text-[12px]">Ketua IPNU</div>
+                                    
+                                    <div class="h-16 w-full flex items-center justify-center relative">
+                                        <img v-if="form.useDigitalSign && customSignIpnu" :src="customSignIpnu" class="max-h-16 max-w-full object-contain">
+                                    </div>
+
+                                    <div>
+                                        <div class="font-bold underline uppercase text-[12px]">{{ form.ketuaIpnu || '..........................' }}</div>
+                                        <div class="text-[10px]">{{ form.niaIpnu || 'NIA. -' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Side IPPNU -->
+                                <div class="flex flex-col items-center justify-between h-32">
+                                    <div class="font-bold text-[12px]">Ketua IPPNU</div>
+                                    
+                                    <div class="h-16 w-full flex items-center justify-center relative">
+                                        <img v-if="form.useDigitalSign && customSignIppnu" :src="customSignIppnu" class="max-h-16 max-w-full object-contain">
+                                    </div>
+
+                                    <div>
+                                        <div class="font-bold underline uppercase text-[12px]">{{ form.ketuaIppnu || '..........................' }}</div>
+                                        <div class="text-[10px]">{{ form.niaIppnu || 'NIA. -' }}</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Additional Signer -->
+                            <div v-if="form.suratType === 'sp_pengesahan' || form.suratType === 'rekomendasi'" class="mt-6 text-center">
+                                <div class="font-bold uppercase text-[11px]">Mengetahui / Mengesahkan</div>
+                                <div class="mt-3">
+                                    <div class="font-bold text-[12px]">{{ form.jabatanTambahan || '_________________' }}</div>
+                                    <div class="h-12 flex items-center justify-center">
+                                        <div class="border-b-2 border-black w-48"></div>
+                                    </div>
+                                    <div class="font-bold underline uppercase text-[12px]">{{ form.namaTambahan || '_________________' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    activeTab: 'org',
+                    isGeneratingPdf: false,
+                    customLogoIpnu: null,
+                    customLogoIppnu: null,
+                    customSignIpnu: null,
+                    customSignIppnu: null,
+                    form: {
+                        suratType: 'undangan_rapat', // UBAHAN: Default dropdown langsung ke undangan rapat
+                        tingkat: 'PR', // UBAHAN: Ganti PAC menjadi PR (Pimpinan Ranting)
+                        namaWilayah: 'DESA PURWODADI', // UBAHAN: Default Desa Purwodadi
+                        alamat: 'Gedung NU Purwodadi, Tembarak, Temanggung', // UBAHAN: Alamat Sekretariat
+                        telepon: '085848689202 (Rekan Lutfi) / 085877164810 (Rekanita Ema)', // UBAHAN: Kontak
+                        email: 'pr.ipnuippnupurwodadi@gmail.com', // UBAHAN: Email Organisasi
+                        website: '',
+                        
+                        // UBAHAN: Data Default Surat Undangan Rapat
+                        nomorSurat: '001/PR/A/X/7354-7355/VII/2026',
+                        lampiran: '-',
+                        perihal: 'UNDANGAN RAPAT PENGURUS', // UBAHAN: Perihal Default
+                        penerima: 'Rekan dan Rekanita Pengurus\nIPNU IPPNU Ranting Purwodadi',
+                        tempatPenerima: 'di- tempat',
+                        
+                        paragrafPembuka: 'Salam silaturahmi kami sampaikan, semoga Allah SWT senantiasa memberikan rahmat-Nya kepada kita semua. Mengharap kehadiran Rekan dan Rekanita dalam Rapat Pengurus yang akan dilaksanakan pada:',
+                        paragrafIsi: 'Rapat ini membahas tentang persiapan kegiatan rutin dan evaluasi program kerja yang telah berjalan. Kehadiran seluruh pengurus sangat diharapkan untuk kelancaran diskusi dan pengambilan keputusan bersama.',
+                        hariAcara: 'Minggu',
+                        tanggalAcara: '09 Agustus 2026',
+                        waktuAcara: '09.00 - Selesai',
+                        tempatAcara: 'Gedung NU Purwodadi, Tembarak, Temanggung',
+                        paragrafPenutup: 'Demikian undangan ini kami sampaikan, atas kehadiran dan partisipasinya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.',
+                        
+                        kotaSurat: 'Temanggung',
+                        tglHijriah: '26 Muharam 1448 H', // UBAHAN: Sesuaikan dengan tanggal Masehi
+                        tglMasehi: '08 Agustus 2026 M', // UBAHAN: Default tanggal surat
+                        
+                        // UBAHAN: Data Pengurus
+                        ketuaIpnu: 'LUTFI ANAM',
+                        niaIpnu: 'NIA. 11.19.03.00032',
+                        ketuaIppnu: 'EMA AMALIA SHALIHA',
+                        niaIppnu: 'NIA. 332325050086',
+                        
+                        tujuanEdaran: '',
+                        tujuanPerjalanan: '',
+                        lamaPerjalanan: '',
+                        namaKader: '',
+                        statusKader: '',
+                        jabatanTambahan: '',
+                        namaTambahan: '',
+                        
+                        useDigitalSign: false
+                    }
+                }
+            },
+            mounted() {
+                // Muat Profil yang disimpan (tidak mengganggu data default undangan)
+                const saved = localStorage.getItem('ipnu_surat_profile');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        // Hanya update field organisasi, jangan timpa data surat preset!
+                        this.form.tingkat = parsed.tingkat || this.form.tingkat;
+                        this.form.namaWilayah = parsed.namaWilayah || this.form.namaWilayah;
+                        this.form.alamat = parsed.alamat || this.form.alamat;
+                        this.form.telepon = parsed.telepon || this.form.telepon;
+                        this.form.email = parsed.email || this.form.email;
+                        this.form.website = parsed.website || this.form.website;
+                        this.form.ketuaIpnu = parsed.ketuaIpnu || this.form.ketuaIpnu;
+                        this.form.niaIpnu = parsed.niaIpnu || this.form.niaIpnu;
+                        this.form.ketuaIppnu = parsed.ketuaIppnu || this.form.ketuaIppnu;
+                        this.form.niaIppnu = parsed.niaIppnu || this.form.niaIppnu;
+                        this.form.kotaSurat = parsed.kotaSurat || this.form.kotaSurat;
+                    } catch (e) {
+                        console.error("Failed loading saved profile", e);
+                    }
+                }
+                
+                // PENTING: Paksa jalankan Load Preset saat halaman dimuat pertama kali.
+                this.loadPreset(this.form.suratType);
+            },
+            methods: {
+                uploadLogo(event, type) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            if (type === 'ipnu') this.customLogoIpnu = e.target.result;
+                            if (type === 'ippnu') this.customLogoIppnu = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+                saveProfile() {
+                    const profile = {
+                        tingkat: this.form.tingkat,
+                        namaWilayah: this.form.namaWilayah,
+                        alamat: this.form.alamat,
+                        telepon: this.form.telepon,
+                        email: this.form.email,
+                        website: this.form.website,
+                        ketuaIpnu: this.form.ketuaIpnu,
+                        niaIpnu: this.form.niaIpnu,
+                        ketuaIppnu: this.form.ketuaIppnu,
+                        niaIppnu: this.form.niaIppnu,
+                        kotaSurat: this.form.kotaSurat
+                    };
+                    localStorage.setItem('ipnu_surat_profile', JSON.stringify(profile));
+                    alert('Profil organisasi berhasil disimpan di browser!');
+                },
+                resetForm() {
+                    if (confirm('Apakah Anda yakin ingin mengosongkan/reset isian form?')) {
+                        this.form.nomorSurat = '';
+                        this.form.perihal = '';
+                        this.form.penerima = '';
+                        this.form.hariAcara = '';
+                        this.form.tanggalAcara = '';
+                        this.form.waktuAcara = '';
+                        this.form.tempatAcara = '';
+                        this.form.paragrafPembuka = '';
+                        this.form.paragrafPenutup = '';
+                        this.form.paragrafIsi = '';
+                        this.form.tujuanEdaran = '';
+                        this.form.tujuanPerjalanan = '';
+                        this.form.lamaPerjalanan = '';
+                        this.form.namaKader = '';
+                        this.form.statusKader = '';
+                        this.form.jabatanTambahan = '';
+                        this.form.namaTambahan = '';
+                        this.form.suratType = '';
+                    }
+                },
+                loadPreset(type) {
+                    this.form.tujuanEdaran = '';
+                    this.form.tujuanPerjalanan = '';
+                    this.form.lamaPerjalanan = '';
+                    this.form.namaKader = '';
+                    this.form.statusKader = '';
+                    this.form.jabatanTambahan = '';
+                    this.form.namaTambahan = '';
+                    this.form.suratType = type;
+                    
+                    const templates = {
+                        'undangan_rapat': {
+                            perihal: 'UNDANGAN RAPAT PENGURUS',
+                            penerima: 'Rekan dan Rekanita Pengurus\nIPNU IPPNU',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan, semoga Allah SWT senantiasa memberikan rahmat-Nya kepada kita semua. Mengharap kehadiran Rekan dan Rekanita dalam Rapat Pengurus yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Rapat ini membahas tentang persiapan kegiatan rutin dan evaluasi program kerja yang telah berjalan. Kehadiran seluruh pengurus sangat diharapkan untuk kelancaran diskusi dan pengambilan keputusan bersama.',
+                            paragrafPenutup: 'Demikian undangan ini kami sampaikan, atas kehadiran dan partisipasinya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'undangan_harlah': {
+                            perihal: 'UNDANGAN HARLAH IPNU IPPNU',
+                            penerima: 'Rekan dan Rekanita IPNU IPPNU\nSegenap Pengurus MWC NU',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dalam rangka memperingati Hari Lahir (Harlah) IPNU dan IPPNU, kami mengundang segenap rekan dan rekanita untuk hadir dalam acara yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Acara Harlah kali ini akan diisi dengan berbagai kegiatan seperti tausiyah, pentas seni, dan bakti sosial sebagai wujud syukur dan kebersamaan organisasi. Kami mengajak seluruh anggota untuk memeriahkan acara ini.',
+                            paragrafPenutup: 'Demikian undangan ini kami sampaikan, atas perhatian dan kehadirannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'undangan_pembina': {
+                            perihal: 'UNDANGAN PEMBINA',
+                            penerima: 'Yth. Bapak/Ibu Pembina\nIPNU IPPNU',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Kami mengundang Bapak/Ibu Pembina untuk menghadiri kegiatan pembinaan rutin yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Kegiatan pembinaan ini merupakan agenda rutin yang bertujuan untuk memberikan arahan, motivasi, dan bimbingan kepada pengurus IPNU IPPNU. Kehadiran dan bimbingan Bapak/Ibu sangat kami nantikan.',
+                            paragrafPenutup: 'Demikian undangan ini kami sampaikan, atas kehadiran Bapak/Ibu Pembina kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'permohonan_pemateri': {
+                            perihal: 'PERMOHONAN PEMATERI/NARASUMBER',
+                            penerima: 'Yth. Pemateri / Narasumber',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Sehubungan dengan akan dilaksanakannya kegiatan Pelatihan Kaderisasi (MAKESTA), kami memohon kesediaan Rekan/Rekanita untuk menjadi narasumber/pemateri pada:',
+                            paragrafIsi: 'Materi yang akan disampaikan berkaitan dengan penguatan organisasi, kepemimpinan, dan manajemen kader. Kami sangat membutuhkan ilmu dan pengalaman dari Rekan/Rekanita untuk membekali para kader IPNU IPPNU.',
+                            paragrafPenutup: 'Demikian permohonan ini kami sampaikan, atas kesediaan dan bantuannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'permohonan_tempat': {
+                            perihal: 'PERMOHONAN TEMPAT/FASILITAS',
+                            penerima: 'Yth. Pengelola Gedung\nMWC NU',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Sehubungan dengan akan dilaksanakannya kegiatan IPNU IPPNU, kami mengajukan permohonan izin penggunaan tempat/fasilitas yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Kegiatan yang akan kami selenggarakan adalah pelatihan kaderisasi yang membutuhkan ruangan yang representatif. Kami mohon izin untuk menggunakan gedung dan fasilitas yang tersedia untuk kelancaran acara.',
+                            paragrafPenutup: 'Demikian permohonan ini kami sampaikan, atas izin dan bantuannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'permohonan_dana': {
+                            perihal: 'PERMOHONAN BANTUAN DANA',
+                            penerima: 'Yth. Bapak/Ibu Donatur\n& Pihak Terkait',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dalam rangka menyukseskan kegiatan IPNU IPPNU, dengan ini kami menyampaikan permohonan bantuan dana/sponsorship yang akan digunakan untuk kegiatan pada:',
+                            paragrafIsi: 'Kegiatan yang akan kami laksanakan membutuhkan biaya operasional untuk konsumsi, transportasi, dan perlengkapan acara. Kami berharap Bapak/Ibu berkenan memberikan bantuan dana untuk menyukseskan acara ini.',
+                            paragrafPenutup: 'Demikian permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'permohonan_rekomendasi': {
+                            perihal: 'PERMOHONAN REKOMENDASI/DUKUNGAN',
+                            penerima: 'Yth. Ketua MWC NU\nKecamatan Tembarak',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami mengajukan permohonan rekomendasi/dukungan dari Bapak/Ibu untuk kegiatan yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Kami memohon dukungan dan rekomendasi dari MWC NU agar kegiatan yang kami rencanakan dapat berjalan lancar dan mendapat dukungan penuh dari semua pihak. Dukungan Bapak/Ibu sangat berarti bagi kami.',
+                            paragrafPenutup: 'Demikian permohonan ini kami sampaikan, atas perhatian dan dukungannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'sp_pengesahan': {
+                            perihal: 'SURAT PENGESAHAN KEPENGURUSAN',
+                            penerima: 'Yth. Pimpinan Anak Cabang IPNU IPPNU\nKecamatan Tembarak',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami mengesahkan susunan kepengurusan Pimpinan Anak Cabang IPNU IPPNU Kecamatan Tembarak masa khidmat 2026-2028 sebagaimana terlampir.',
+                            paragrafIsi: 'Kepengurusan yang telah disahkan ini diharapkan dapat menjalankan amanah organisasi dengan penuh tanggung jawab dan dedikasi tinggi. Semoga kepengurusan ini membawa kemajuan bagi IPNU IPPNU Kecamatan Tembarak.',
+                            paragrafPenutup: 'Demikian surat pengesahan ini kami sampaikan, semoga amanah ini dapat dijalankan dengan sebaik-baiknya. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'rekomendasi': {
+                            perihal: 'SURAT REKOMENDASI',
+                            penerima: 'Yth. Pimpinan Cabang IPNU IPPNU\nKab. Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami memberikan rekomendasi kepada Pimpinan Anak Cabang IPNU IPPNU Kecamatan Tembarak untuk diajukan pengesahan kepengurusannya ke tingkat atas.',
+                            paragrafIsi: 'Setelah melakukan verifikasi dan evaluasi, kami merekomendasikan kepengurusan PAC IPNU IPPNU Kecamatan Tembarak untuk mendapatkan pengesahan resmi dari Pimpinan Cabang. Semoga dapat menjadi pertimbangan.',
+                            paragrafPenutup: 'Demikian surat rekomendasi ini kami sampaikan, semoga menjadi pertimbangan. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'mandat': {
+                            perihal: 'SURAT MANDAT',
+                            penerima: 'Yth. Rekan/Rekanita yang diberi Mandat',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami memberikan mandat kepada rekan/rekanita untuk mewakili organisasi dalam kegiatan yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Rekan/Rekanita yang diberi mandat ini memiliki kewenangan penuh untuk mengambil keputusan dan bertindak atas nama organisasi dalam kegiatan yang dimaksud. Semoga amanah ini dapat diemban dengan baik.',
+                            paragrafPenutup: 'Demikian surat mandat ini kami sampaikan, semoga dapat dilaksanakan dengan penuh tanggung jawab. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'surat_tugas': {
+                            perihal: 'SURAT TUGAS',
+                            penerima: 'Yth. Tim Pelaksana Kegiatan',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami menugaskan rekan/rekanita untuk melaksanakan tugas kepanitiaan dalam kegiatan yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Tugas yang diberikan meliputi koordinasi acara, pengelolaan peserta, dan pelaksanaan teknis kegiatan. Diharapkan tugas ini dapat dilaksanakan dengan profesional dan penuh tanggung jawab.',
+                            paragrafPenutup: 'Demikian surat tugas ini kami sampaikan, semoga dapat dilaksanakan dengan baik. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'pemberitahuan': {
+                            perihal: 'PEMBERITAHUAN KEGIATAN',
+                            penerima: 'Yth. Ketua MWC NU\nKecamatan Tembarak',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Bersama surat ini kami beritahukan bahwa Pimpinan Anak Cabang IPNU IPPNU akan menyelenggarakan agenda yang akan dilaksanakan pada:',
+                            paragrafIsi: 'Kami menyampaikan pemberitahuan ini agar semua pihak dapat mengetahui dan memberikan dukungan terhadap kegiatan yang akan kami selenggarakan. Informasi lebih lanjut dapat menghubungi sekretariat kami.',
+                            paragrafPenutup: 'Demikian pemberitahuan ini kami sampaikan, atas perhatiannya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'instruksi': {
+                            perihal: 'INSTRUKSI PELAKSANAAN KEGIATAN',
+                            penerima: 'Seluruh Pimpinan Anak Cabang IPNU IPPNU\nse-Kabupaten Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami menginstruksikan kepada seluruh PAC IPNU IPPNU untuk segera melaksanakan kegiatan kaderisasi sesuai dengan pedoman yang telah ditetapkan.',
+                            paragrafIsi: 'Instruksi ini wajib dilaksanakan oleh seluruh PAC dengan mengikuti prosedur dan ketentuan yang berlaku. Laporan pelaksanaan kegiatan harus disampaikan paling lambat 7 hari setelah kegiatan selesai.',
+                            paragrafPenutup: 'Demikian instruksi ini kami sampaikan, agar dilaksanakan dengan sebaik-baiknya. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'edaran': {
+                            perihal: 'SURAT EDARAN HARLAH IPNU IPPNU',
+                            penerima: 'Seluruh Pimpinan Anak Cabang IPNU IPPNU\nse-Kabupaten Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dalam rangka memperingati Harlah IPNU dan IPPNU, dengan ini kami edarkan panduan pelaksanaan kegiatan yang akan dilaksanakan secara serentak pada:',
+                            paragrafIsi: 'Seluruh PAC diwajibkan mengikuti panduan yang telah ditetapkan dalam pelaksanaan Harlah. Panduan teknis telah dilampirkan dan mohon untuk dipelajari serta dilaksanakan dengan sebaik-baiknya.',
+                            paragrafPenutup: 'Demikian surat edaran ini kami sampaikan, mohon untuk disebarluaskan dan dilaksanakan. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        },
+                        'keterangan_aktif': {
+                            perihal: 'SURAT KETERANGAN AKTIF/KADER',
+                            penerima: 'Yth. Pimpinan Cabang IPNU IPPNU\nKab. Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami menerangkan bahwa kader yang bersangkutan adalah anggota aktif IPNU IPPNU.',
+                            paragrafIsi: 'Surat keterangan ini diberikan untuk keperluan administrasi yang bersangkutan. Keterangan ini berlaku selama yang bersangkutan masih terdaftar sebagai anggota aktif organisasi.',
+                            paragrafPenutup: 'Demikian surat keterangan ini kami buat untuk dapat digunakan sebagaimana mestinya. Wassalamu\'alaikum warahmatullahi wabarakatuh.',
+                            namaKader: 'Muhammad Fikri Al-Ghifari',
+                            statusKader: 'Pengurus IPNU / Alumni MAKESTA'
+                        },
+                        'spd': {
+                            perihal: 'SURAT PERJALANAN DINAS',
+                            penerima: 'Yth. Pimpinan Cabang IPNU IPPNU\nKab. Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Dengan ini kami memberikan izin perjalanan dinas kepada rekan/rekanita untuk melaksanakan tugas organisasi di luar daerah.',
+                            paragrafIsi: 'Perjalanan dinas ini bertujuan untuk menjalin koordinasi dan silaturahmi dengan pengurus di daerah lain serta mengikuti kegiatan organisasi tingkat wilayah.',
+                            paragrafPenutup: 'Demikian surat perjalanan dinas ini kami sampaikan, semoga perjalanan dilancarkan. Wassalamu\'alaikum warahmatullahi wabarakatuh.',
+                            tujuanPerjalanan: 'Kota Surabaya, Jawa Timur',
+                            lamaPerjalanan: '3 (tiga) hari'
+                        },
+                        'balasan': {
+                            perihal: 'SURAT BALASAN/JAWABAN',
+                            penerima: 'Yth. Pimpinan Cabang IPNU IPPNU\nKab. Temanggung',
+                            paragrafPembuka: 'Salam silaturahmi kami sampaikan. Menindaklanjuti surat permohonan yang telah kami terima, dengan ini kami sampaikan jawaban/konfirmasi sebagai berikut:',
+                            paragrafIsi: 'Kami menerima dan menyetujui permohonan yang diajukan. Selanjutnya kami akan melakukan koordinasi lebih lanjut untuk tindak lanjut dari permohonan tersebut.',
+                            paragrafPenutup: 'Demikian surat balasan ini kami sampaikan, semoga dapat dimaklumi. Wassalamu\'alaikum warahmatullahi wabarakatuh.'
+                        }
+                    };
+                    
+                    if (templates[type]) {
+                        const tpl = templates[type];
+                        this.form.perihal = tpl.perihal || '';
+                        this.form.penerima = tpl.penerima || '';
+                        this.form.paragrafPembuka = tpl.paragrafPembuka || '';
+                        this.form.paragrafIsi = tpl.paragrafIsi || '';
+                        this.form.paragrafPenutup = tpl.paragrafPenutup || '';
+                        this.form.namaKader = tpl.namaKader || '';
+                        this.form.statusKader = tpl.statusKader || '';
+                        this.form.tujuanPerjalanan = tpl.tujuanPerjalanan || '';
+                        this.form.lamaPerjalanan = tpl.lamaPerjalanan || '';
+                        
+                        if (type === 'edaran' || type === 'instruksi') {
+                            this.form.tujuanEdaran = this.form.penerima;
+                        }
+                    }
+                },
+                uploadSign(event, field) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            if (field === 'signIpnu') this.customSignIpnu = e.target.result;
+                            if (field === 'signIppnu') this.customSignIppnu = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+                downloadPdf() {
+                    const element = document.getElementById('printable-surat');
+                    if (!element) return;
+
+                    this.isGeneratingPdf = true;
+
+                    const filename = `Surat_IPNU_IPPNU_${(this.form.perihal || 'Dokumen').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+
+                    const opt = {
+                        margin:       [15, 15, 15, 15],
+                        filename:     filename,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { scale: 2, useCORS: true, logging: false },
+                        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
+
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        this.isGeneratingPdf = false;
+                    }).catch(err => {
+                        console.error('PDF Generation Error:', err);
+                        this.isGeneratingPdf = false;
+                        alert('Gagal menghasilkan PDF. Silakan gunakan tombol "Cetak Langsung" lalu pilih Save as PDF.');
+                    });
+                },
+                printSurat() {
+                    window.print();
+                },
+                downloadDocx() {
+                    const content = document.getElementById('printable-surat').innerHTML;
+                    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+                        "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+                        "xmlns='http://www.w3.org/TR/REC-html40'>"+
+                        "<head><meta charset='utf-8'><title>Surat Undangan</title>"+
+                        "<style>body { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 12pt; }</style>"+
+                        "</head><body>";
+                    const footer = "</body></html>";
+                    const sourceHTML = header + content + footer;
+
+                    const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+                    const fileDownload = document.createElement("a");
+                    document.body.appendChild(fileDownload);
+                    fileDownload.href = source;
+                    fileDownload.download = `Surat_IPNU_IPPNU_${this.form.perihal.replace(/\s+/g, '_')}.doc`;
+                    fileDownload.click();
+                    document.body.removeChild(fileDownload);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
