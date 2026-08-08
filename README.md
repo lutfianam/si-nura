@@ -83,7 +83,7 @@ Isi kolom data yang tersedia (Nomor Surat, Lampiran, Tujuan, Tanggal, dan Penand
 
 ## 🕊️ Quote & Catatan Inspiratif
 
-> *"Administrasi bukan sekadar tumpukan kertas dan stempel, melainkan jembatan komunikasi yang mengikat kerapian derap langkah perjuangan."*
+> *"Dedikasi dalam merapikan setiap lembar naskah ini lahir dari inspirasi sosok wanita yang aku cintai-NYA bahwa setiap ketelitian, kerapian, dan langkah perjuangan selalu menemukan jalannya saat dituntun oleh rasa kasih dan keyakinan."*
 
 ---
 
