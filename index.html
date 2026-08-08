@@ -131,10 +131,154 @@
             flex-direction: column;
             min-height: 100%;
         }
+        <!-- ============================================== -->
+        <!-- BAGIAN 1: TEMPELKAN CSS INI DI DALAM TAG <style> -->
+        <!-- ============================================== -->
+        <style>
+            /* ... (CSS Anda yang lama tetap di atas sini) ... */
+        
+            /* CSS KHUSUS UNTUK MODAL POPUP */
+            .modal-overlay {
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-color: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            .modal-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .modal-box {
+                background: #ffffff;
+                max-width: 550px;
+                width: 100%;
+                border-radius: 24px;
+                padding: 40px 35px;
+                position: relative;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                transform: translateY(30px) scale(0.95);
+                transition: transform 0.3s ease;
+                text-align: center;
+            }
+            .modal-overlay.active .modal-box {
+                transform: translateY(0) scale(1);
+            }
+            .modal-icon {
+                background: #ecfdf5;
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 15px;
+                color: #059669;
+                font-size: 32px;
+            }
+            .modal-title {
+                font-family: 'Cinzel', serif;
+                font-size: 22px;
+                font-weight: 700;
+                color: #064e3b;
+                margin-bottom: 8px;
+            }
+            .modal-subtitle {
+                font-size: 14px;
+                color: #6b7280;
+                margin-bottom: 20px;
+            }
+            .modal-body {
+                font-size: 14px;
+                color: #374151;
+                text-align: left;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                border-top: 1px solid #e5e7eb;
+                padding-top: 20px;
+            }
+            .modal-body ul {
+                padding-left: 20px;
+                list-style-type: disc;
+                margin: 10px 0;
+            }
+            .modal-body ul li { margin-bottom: 6px; }
+            .modal-quote {
+                background: #f9fafb;
+                padding: 15px;
+                border-radius: 12px;
+                border-left: 4px solid #10b981;
+                font-style: italic;
+                font-size: 14px;
+                color: #4b5563;
+                margin: 20px 0;
+            }
+            .modal-btn {
+                background: #059669;
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 30px;
+                font-weight: 600;
+                font-size: 15px;
+                cursor: pointer;
+                transition: background 0.2s;
+                width: 100%;
+                box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
+            }
+            .modal-btn:hover { background: #047857; }
+</style>
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
 
+    <!-- ============================================== -->
+    <!-- BAGIAN 2: TEMPELKAN HTML INI DI ATAS TAG <div id="app"> -->
+    <!-- Letakkan tepat di atas baris: <div id="app" class="flex flex-col flex-1"> -->
+    <!-- ============================================== -->
+    <div id="welcome-modal" class="modal-overlay" :class="{ 'active': showModal }">
+        <div class="modal-box">
+            <!-- Icon -->
+            <div class="modal-icon">
+                <i class="fa-solid fa-hands-praying"></i>
+            </div>
+    
+            <!-- Title -->
+            <h2 class="modal-title">Selamat Datang!</h2>
+            <p class="modal-subtitle">Sistem Generator Surat IPNU IPPNU Ranting Purwodadi</p>
+    
+            <!-- Body Instructions -->
+            <div class="modal-body">
+                <p class="font-semibold text-emerald-700 mb-2">Petunjuk Penggunaan:</p>
+                <ul>
+                    <li>Pilih jenis surat pada menu <b>Preset Template Surat</b>.</li>
+                    <li>Isi form di panel kiri (Organisasi, Tujuan, Acara, TTD).</li>
+                    <li>Hasil surat akan muncul secara <b>real-time</b> di panel kanan.</li>
+                    <li>Klik <b>Download PDF</b>, <b>Cetak</b>, atau <b>Download DOCX</b>.</li>
+                </ul>
+                
+                <!-- Random Quote Section -->
+                <div class="modal-quote">
+                    <i class="fa-solid fa-quote-left text-emerald-500 mr-1"></i>
+                    {{ randomQuote }}
+                    <i class="fa-solid fa-quote-right text-emerald-500 ml-1"></i>
+                </div>
+            </div>
+    
+            <!-- Tombol Mulai -->
+            <button @click="closeModal" class="modal-btn">
+                <i class="fa-solid fa-arrow-right mr-2"></i> Mulai Gunakan
+            </button>
+        </div>
+    </div>
+    
     <div id="app" class="flex flex-col flex-1">
         
         <!-- Navbar Header -->
@@ -762,6 +906,18 @@
         createApp({
             data() {
                 return {
+                    // -- BAGIAN MODAL BARU --
+                    showModal: true,
+                    quotes: [
+                        "Barang siapa yang menempuh jalan untuk mencari ilmu, maka Allah akan mudahkan baginya jalan menuju surga. (HR. Muslim)",
+                        "Masa depan adalah milik mereka yang mempersiapkannya hari ini. (Malcolm X)",
+                        "Kader IPNU IPPNU adalah harapan bangsa, jadilah pelajar yang berakhlak dan berilmu.",
+                        "Kepemimpinan bukan tentang gelar, tetapi tentang tanggung jawab dan pengabdian.",
+                        "Jadilah pemimpin yang melayani, bukan penguasa yang dilayani."
+                    ],
+                    randomQuote: "",
+                    // ---------------------------
+
                     activeTab: 'org',
                     isGeneratingPdf: false,
                     customLogoIpnu: null,
@@ -769,18 +925,17 @@
                     customSignIpnu: null,
                     customSignIppnu: null,
                     form: {
-                        suratType: 'undangan_rapat', // UBAHAN: Default dropdown langsung ke undangan rapat
-                        tingkat: 'PR', // UBAHAN: Ganti PAC menjadi PR (Pimpinan Ranting)
-                        namaWilayah: 'DESA PURWODADI', // UBAHAN: Default Desa Purwodadi
-                        alamat: 'Gedung NU Purwodadi, Tembarak, Temanggung', // UBAHAN: Alamat Sekretariat
-                        telepon: '085848689202 (Rekan Lutfi) / 085877164810 (Rekanita Ema)', // UBAHAN: Kontak
-                        email: 'pr.ipnuippnupurwodadi@gmail.com', // UBAHAN: Email Organisasi
+                        suratType: 'undangan_rapat',
+                        tingkat: 'PR',
+                        namaWilayah: 'DESA PURWODADI',
+                        alamat: 'Gedung NU Purwodadi, Tembarak, Temanggung',
+                        telepon: '085848689202 (Rekan Lutfi) / 085877164810 (Rekanita Ema)',
+                        email: 'pr.ipnuippnupurwodadi@gmail.com',
                         website: '',
                         
-                        // UBAHAN: Data Default Surat Undangan Rapat
                         nomorSurat: '001/PR/A/X/7354-7355/VII/2026',
                         lampiran: '-',
-                        perihal: 'UNDANGAN RAPAT PENGURUS', // UBAHAN: Perihal Default
+                        perihal: 'UNDANGAN RAPAT PENGURUS',
                         penerima: 'Rekan dan Rekanita Pengurus\nIPNU IPPNU Ranting Purwodadi',
                         tempatPenerima: 'di- tempat',
                         
@@ -793,10 +948,9 @@
                         paragrafPenutup: 'Demikian undangan ini kami sampaikan, atas kehadiran dan partisipasinya kami ucapkan terima kasih. Wassalamu\'alaikum warahmatullahi wabarakatuh.',
                         
                         kotaSurat: 'Temanggung',
-                        tglHijriah: '26 Muharam 1448 H', // UBAHAN: Sesuaikan dengan tanggal Masehi
-                        tglMasehi: '08 Agustus 2026 M', // UBAHAN: Default tanggal surat
+                        tglHijriah: '26 Muharam 1448 H',
+                        tglMasehi: '08 Agustus 2026 M',
                         
-                        // UBAHAN: Data Pengurus
                         ketuaIpnu: 'LUTFI ANAM',
                         niaIpnu: 'NIA. 11.19.03.00032',
                         ketuaIppnu: 'EMA AMALIA SHALIHA',
@@ -815,12 +969,14 @@
                 }
             },
             mounted() {
-                // Muat Profil yang disimpan (tidak mengganggu data default undangan)
+                // -- BAGIAN MODAL BARU (Mengambil quote acak saat halaman dimuat) --
+                this.randomQuote = this.getRandomQuote();
+                // ------------------------------------------------------------------
+
                 const saved = localStorage.getItem('ipnu_surat_profile');
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        // Hanya update field organisasi, jangan timpa data surat preset!
                         this.form.tingkat = parsed.tingkat || this.form.tingkat;
                         this.form.namaWilayah = parsed.namaWilayah || this.form.namaWilayah;
                         this.form.alamat = parsed.alamat || this.form.alamat;
@@ -837,10 +993,19 @@
                     }
                 }
                 
-                // PENTING: Paksa jalankan Load Preset saat halaman dimuat pertama kali.
                 this.loadPreset(this.form.suratType);
             },
             methods: {
+                // -- BAGIAN METODE MODAL BARU --
+                closeModal() {
+                    this.showModal = false;
+                },
+                getRandomQuote() {
+                    const randomIndex = Math.floor(Math.random() * this.quotes.length);
+                    return this.quotes[randomIndex];
+                },
+                // -----------------------------
+
                 uploadLogo(event, type) {
                     const file = event.target.files[0];
                     if (file) {
