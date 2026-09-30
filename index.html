@@ -71,10 +71,7 @@
         <div v-if="showWelcomeModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4 border border-emerald-100 animate-fadeIn max-h-[90vh] overflow-y-auto">
                 <div class="text-center space-y-1">
-                    <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full text-emerald-700 shadow-inner mb-1">
-                        <i class="fa-solid fa-file-pen text-xl"></i>
-                    </div>
-                    <h2 class="text-xl md:text-2xl font-extrabold text-emerald-950 font-trajan-pro">SI-NURA</h2>
+                    <img src="https://lutfianam.github.io/si-nura/logo-si-nura.png" alt="SI-NURA Logo" class="h-16 md:h-20 w-auto mx-auto mb-2 object-contain">
                     <p class="text-xs text-slate-500 font-medium">Sistem Informasi Naskah & Undangan Resmi Administrasi</p>
                     <p class="text-xs font-bold text-emerald-700 pt-1">{{ greetingMessage }}</p>
                 </div>
@@ -484,10 +481,10 @@
             </div>
 
             <!-- RIGHT PANEL: Live Document Paper Preview with Normalized Scaling -->
-            <div class="lg:col-span-7 flex justify-center items-start overflow-x-auto pb-8 pt-4 lg:pt-0">
+            <div class="lg:col-span-7 flex flex-col w-full max-w-full overflow-hidden pb-8 pt-4 lg:pt-0">
                 <!-- Wrapper ensures scale doesn't affect surrounding layout, keeping mobile and PC view consistent -->
-                <div class="min-w-max shadow-xl overflow-hidden bg-slate-200 p-2 md:p-4 rounded-lg">
-                    <div class="bg-white surat-document origin-top-left mx-auto relative" 
+                <div class="w-full overflow-x-auto shadow-xl bg-slate-200 p-2 md:p-4 rounded-lg flex justify-start lg:justify-center items-start">
+                    <div class="bg-white surat-document origin-top-left relative flex-shrink-0" 
                          id="printable-surat"
                          :style="{ 
                              width: paperDimensions.width, 
@@ -521,13 +518,25 @@
                                 <div class="font-bold tracking-wide">{{ form.namaWilayah }}</div>
 
                                 <!-- Secretariat Address -->
-                                <div class="normal-case text-black leading-snug space-y-0.5 font-semibold font-averta text-right flex flex-col items-end pt-1" style="font-size: 10px;">
+                                <div class="normal-case text-black leading-snug space-y-0.5 font-semibold font-averta text-right flex flex-col items-end pt-1" style="font-size: 9px;">
                                     <div>{{ form.alamat }}</div>
-                                    <div class="flex items-center justify-end gap-1">
-                                        <span>Telp: {{ form.telepon }} &nbsp;|&nbsp; Email: <span class="underline">{{ form.email }}</span></span>
+                                    <div v-if="form.telepon" class="flex items-center justify-end gap-1.5 mt-0.5">
+                                        <span>{{ form.telepon }}</span>
+                                        <div class="w-3.5 h-3.5 rounded-full border border-green-700 flex items-center justify-center text-green-700 shrink-0">
+                                            <i class="fa-brands fa-whatsapp text-[8px]"></i>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-end gap-1" v-if="form.website">
-                                        <span>Website: <span class="underline">{{ form.website }}</span></span>
+                                    <div v-if="form.email" class="flex items-center justify-end gap-1.5 mt-0.5">
+                                        <span class="underline">{{ form.email }}</span>
+                                        <div class="w-3.5 h-3.5 rounded-full border border-green-700 flex items-center justify-center text-green-700 shrink-0">
+                                            <i class="fa-regular fa-envelope text-[8px]"></i>
+                                        </div>
+                                    </div>
+                                    <div v-if="form.website" class="flex items-center justify-end gap-1.5 mt-0.5">
+                                        <span class="underline">{{ form.website }}</span>
+                                        <div class="w-3.5 h-3.5 rounded-full border border-green-700 flex items-center justify-center text-green-700 shrink-0">
+                                            <i class="fa-solid fa-globe text-[8px]"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -783,7 +792,12 @@
                     const quotes = [
                         "Sebagaimana tinta mengikat makna pada sehelai kertas putih, namamu terukir rapi di bait doa terindah.",
                         "Administrasi mungkin tentang kerapian baris dan format, tapi perjuangan kita adalah bait sajak tulus tanpa akhir.",
-                        "Rindu adalah surat cinta terpanjang yang ditulis semesta di lembaran malam, menanti dibaca oleh temu."
+                        "Rindu adalah surat cinta terpanjang yang ditulis semesta di lembaran malam, menanti dibaca oleh temu.",
+                        "Aku menyebut namamu di dalam dingin malam. Rindu ini adalah luka yang tak ingin kusembuhkan. (WS. Rendra)",
+                        "Ada yang berpisah dari tubuhku. Aku mendengarnya jatuh ke dasar malam, seperti surat yang tak pernah dikirim. (Aan Mansyur)",
+                        "Rindu itu seperti arus bawah laut, tak terlihat di permukaan, tetapi sanggup menggerakkan kapal besar. (Pramoedya Ananta Toer)",
+                        "Dan rindu kembali mengetuk pintu, membawa malam yang makin kelam ke dalam dada. (Joko Choudry)",
+                        "Aku ingin mencintaimu dengan sederhana... seperti kayu kepada api yang menjadikannya abu. (Sapardi Djoko Damono)"
                     ];
                     this.randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
                 },
