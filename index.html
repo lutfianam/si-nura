@@ -134,10 +134,10 @@
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div class="flex items-center bg-white/10 p-1 md:p-1.5 rounded-xl backdrop-blur-lg border border-white/20 shadow-inner">
                         <div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-emerald-300 shadow-sm">
-                            <img :src="customIpnuLogo || 'https://placehold.co/100x100/10b981/ffffff?text=IPNU'" alt="IPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPNU'">
+                            <img :src="customIpnuLogo || 'https://lutfianam.github.io/si-nura/ipnu.png'" alt="IPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPNU'">
                         </div>
                         <div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-emerald-300 shadow-sm -ml-3 md:-ml-4">
-                            <img :src="customIppnuLogo || 'https://placehold.co/100x100/10b981/ffffff?text=IPPNU'" alt="IPPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPPNU'">
+                            <img :src="customIppnuLogo || 'https://lutfianam.github.io/si-nura/ippnu.png'" alt="IPPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPPNU'">
                         </div>
                     </div>
                     <div>
@@ -497,12 +497,80 @@
                             <div class="w-[75px] flex items-center justify-center">
                                 <img v-if="customIpnuLogo" :src="customIpnuLogo" alt="Logo IPNU" class="w-full h-auto object-contain">
                                 <svg v-else viewBox="0 0 200 200" class="w-full h-auto object-contain">
-                                    <circle cx="100" cy="100" r="94" fill="#0e8a44" stroke="#facc15" stroke-width="8"></circle>
-                                    <path id="curve" fill="none" d="M 30,100 A 70,70 0 1,1 170,100"></path>
-                                    <text font-family="Arial, sans-serif" font-weight="bold" font-size="22" fill="#ffffff"><textPath href="#curve" startOffset="50%" text-anchor="middle">I. P. N. U.</textPath></text>
-                                    <polygon points="100,35 110,65 142,65 116,84 126,114 100,95 74,114 84,84 58,65 90,65" fill="#facc15"></polygon>
-                                    <path d="M 50,145 Q 100,175 150,145" fill="none" stroke="#ffffff" stroke-width="6"></path>
-                                    <rect x="88" y="125" width="24" height="28" fill="#ffffff" rx="2"></rect>
+                                    <!-- Cincin luar kuning -->
+                                    <circle cx="100" cy="100" r="96" fill="#facc15"></circle>
+                                    <!-- Lingkaran hijau utama -->
+                                    <circle cx="100" cy="100" r="86" fill="#0e8a44" stroke="#ffffff" stroke-width="2"></circle>
+                                    <!-- Cincin dalam putih tipis -->
+                                    <circle cx="100" cy="100" r="78" fill="none" stroke="#ffffff" stroke-width="1.5"></circle>
+                                
+                                    <!-- Jalur teks melengkung atas -->
+                                    <path id="curve" fill="none" d="M 32,100 A 68,68 0 1,1 168,100"></path>
+                                
+                                    <!-- Teks I.P.N.U melengkung -->
+                                    <text font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" letter-spacing="2">
+                                        <textPath href="#curve" startOffset="50%" text-anchor="middle">I.P.N.U</textPath>
+                                    </text>
+                                
+                                    <!-- Garis-garis kecil kiri (dekorasi) -->
+                                    <g stroke="#ffffff" stroke-width="2.5" stroke-linecap="round">
+                                        <line x1="38" y1="105" x2="48" y2="112"></line>
+                                        <line x1="38" y1="112" x2="48" y2="119"></line>
+                                        <line x1="38" y1="119" x2="48" y2="126"></line>
+                                    </g>
+                                
+                                    <!-- Garis-garis kecil kanan (dekorasi) -->
+                                    <g stroke="#ffffff" stroke-width="2.5" stroke-linecap="round">
+                                        <line x1="162" y1="105" x2="152" y2="112"></line>
+                                        <line x1="162" y1="112" x2="152" y2="119"></line>
+                                        <line x1="162" y1="119" x2="152" y2="126"></line>
+                                    </g>
+                                
+                                    <!-- Bintang besar di tengah atas -->
+                                    <polygon points="100,55 105,72 123,72 109,83 114,100 100,89 86,100 91,83 77,72 95,72"
+                                             fill="#facc15"></polygon>
+                                
+                                    <!-- Bintang kiri (2 buah) -->
+                                    <polygon points="58,80 61,88 69,88 63,93 65,101 58,96 51,101 53,93 47,88 55,88" fill="#facc15"></polygon>
+                                    <polygon points="48,100 51,108 59,108 53,113 55,121 48,116 41,121 43,113 37,108 45,108" fill="#facc15"></polygon>
+                                
+                                    <!-- Bintang kanan (2 buah) -->
+                                    <polygon points="142,80 145,88 153,88 147,93 149,101 142,96 135,101 137,93 131,88 139,88" fill="#facc15"></polygon>
+                                    <polygon points="152,100 155,108 163,108 157,113 159,121 152,116 145,121 147,113 141,108 149,108" fill="#facc15"></polygon>
+                                
+                                    <!-- Bintang bawah kiri & kanan -->
+                                    <polygon points="72,110 75,118 83,118 77,123 79,131 72,126 65,131 67,123 61,118 69,118" fill="#facc15"></polygon>
+                                    <polygon points="128,110 131,118 139,118 133,123 135,131 128,126 121,131 123,123 117,118 125,118" fill="#facc15"></polygon>
+                                
+                                    <!-- Bintang bawah kiri & kanan (lebih rendah) -->
+                                    <polygon points="85,125 88,133 96,133 90,138 92,146 85,141 78,146 80,138 74,133 82,133" fill="#facc15"></polygon>
+                                    <polygon points="115,125 118,133 126,133 120,138 122,146 115,141 108,146 110,138 104,133 112,133" fill="#facc15"></polygon>
+                                
+                                    <!-- Buku / Kitab putih di tengah -->
+                                    <g fill="#ffffff" stroke="#0e8a44" stroke-width="1">
+                                        <rect x="93" y="115" width="14" height="22" rx="1"></rect>
+                                        <line x1="100" y1="115" x2="100" y2="137" stroke="#0e8a44" stroke-width="0.8"></line>
+                                        <line x1="96" y1="120" x2="99" y2="120" stroke="#0e8a44" stroke-width="0.6"></line>
+                                        <line x1="96" y1="124" x2="99" y2="124" stroke="#0e8a44" stroke-width="0.6"></line>
+                                        <line x1="96" y1="128" x2="99" y2="128" stroke="#0e8a44" stroke-width="0.6"></line>
+                                        <line x1="101" y1="120" x2="104" y2="120" stroke="#0e8a44" stroke-width="0.6"></line>
+                                        <line x1="101" y1="124" x2="104" y2="124" stroke="#0e8a44" stroke-width="0.6"></line>
+                                        <line x1="101" y1="128" x2="104" y2="128" stroke="#0e8a44" stroke-width="0.6"></line>
+                                    </g>
+                                
+                                    <!-- Padi / bulu bersilang (kiri) -->
+                                    <g fill="#ffffff">
+                                        <path d="M 40,150 Q 55,135 75,140 Q 60,148 50,158 Q 45,155 40,150 Z"></path>
+                                        <path d="M 42,155 Q 58,142 78,148 Q 62,155 52,163 Q 47,160 42,155 Z"></path>
+                                        <path d="M 45,160 Q 62,150 82,156 Q 66,162 56,170 Q 50,166 45,160 Z"></path>
+                                    </g>
+                                
+                                    <!-- Padi / bulu bersilang (kanan) -->
+                                    <g fill="#ffffff">
+                                        <path d="M 160,150 Q 145,135 125,140 Q 140,148 150,158 Q 155,155 160,150 Z"></path>
+                                        <path d="M 158,155 Q 142,142 122,148 Q 138,155 148,163 Q 153,160 158,155 Z"></path>
+                                        <path d="M 155,160 Q 138,150 118,156 Q 134,162 144,170 Q 150,166 155,160 Z"></path>
+                                    </g>
                                 </svg>
                             </div>
                             <!-- IPPNU Logo -->
