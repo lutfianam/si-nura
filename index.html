@@ -13,7 +13,7 @@
     <!-- html2canvas for Client-side JPG Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
     
     <style>
         @font-face {
@@ -28,7 +28,7 @@
             font-weight: 600;
         }
 
-        .font-trajan-pro { font-family: 'Trajan Pro', serif; font-weight: bold; }
+        .font-trajan-pro { font-family: 'Trajan Pro', 'Cinzel', serif; font-weight: bold; }
         .font-averta { font-family: 'Averta SemiBold', 'Plus Jakarta Sans', sans-serif; font-weight: 600; }
         .font-arial-narrow { font-family: 'Arial Narrow', Arial, sans-serif; }
         .font-arial { font-family: Arial, Helvetica, sans-serif; }
@@ -36,7 +36,7 @@
 
         .surat-document {
             color: #000;
-            line-height: 1.25;
+            line-height: 1.2;
             background-color: white;
             box-sizing: border-box;
         }
@@ -69,30 +69,30 @@
 
         <!-- Welcome Modal Overlay -->
         <div v-if="showWelcomeModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-5 border border-emerald-100 animate-fadeIn">
-                <div class="text-center space-y-2">
-                    <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-100 rounded-full text-emerald-700 shadow-inner mb-1">
-                        <i class="fa-solid fa-file-pen text-2xl"></i>
+            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4 border border-emerald-100 animate-fadeIn max-h-[90vh] overflow-y-auto">
+                <div class="text-center space-y-1">
+                    <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full text-emerald-700 shadow-inner mb-1">
+                        <i class="fa-solid fa-file-pen text-xl"></i>
                     </div>
                     <h2 class="text-xl md:text-2xl font-extrabold text-emerald-950 font-trajan-pro">SI-NURA</h2>
                     <p class="text-xs text-slate-500 font-medium">Sistem Informasi Naskah & Undangan Resmi Administrasi</p>
-                    <p class="text-sm font-bold text-emerald-700 pt-1">{{ greetingMessage }}</p>
+                    <p class="text-xs font-bold text-emerald-700 pt-1">{{ greetingMessage }}</p>
                 </div>
 
-                <div class="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-100 text-xs text-emerald-900 italic text-center">
+                <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 text-xs text-emerald-900 italic text-center">
                     "{{ randomQuote }}"
                 </div>
 
                 <!-- Input Form for Welcome Modal -->
-                <div class="space-y-3">
+                <div class="space-y-2.5">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
-                        <input type="text" v-model="userVisitor.nama" placeholder="Contoh: Rekan Lutfi Anam" class="w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <input type="text" v-model="userVisitor.nama" placeholder="Contoh: Rekan Lutfi Anam" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Tingkatan Kepengurusan</label>
-                            <select v-model="userVisitor.tingkat" class="w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <select v-model="userVisitor.tingkat" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                                 <option value="Pimpinan Ranting">Pimpinan Ranting</option>
                                 <option value="Pimpinan Komisariat">Pimpinan Komisariat</option>
                                 <option value="Pimpinan Anak Cabang">Pimpinan Anak Cabang</option>
@@ -101,25 +101,29 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Wilayah / Lembaga</label>
-                            <input type="text" v-model="userVisitor.wilayah" placeholder="Contoh: Desa Purwodadi" class="w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <input type="text" v-model="userVisitor.wilayah" placeholder="Contoh: Desa Purwodadi" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         </div>
                     </div>
                 </div>
 
-                <!-- Help collapsible -->
+                <!-- Help & Google Form Tutorial Card -->
                 <div>
                     <button @click="toggleHelp" type="button" class="text-xs font-semibold text-emerald-700 hover:underline flex items-center">
-                        <i class="fa-solid fa-circle-question mr-1.5"></i> {{ showHelp ? 'Sembunyikan Petunjuk Penggunaan' : 'Lihat Petunjuk Penggunaan' }}
+                        <i class="fa-solid fa-circle-question mr-1.5"></i> {{ showHelp ? 'Sembunyikan Petunjuk & Tutorial G-Form' : 'Petunjuk Penggunaan & Tutorial G-Form' }}
                     </button>
-                    <div v-if="showHelp" class="mt-2 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-lg border space-y-1">
-                        <p>1. Pilih <b>Preset Template</b> di panel kiri untuk otomatis memuat draf surat resmi.</p>
-                        <p>2. Sesuaikan Kop, Nomor, Perihal, serta Isi Surat di tab editor.</p>
-                        <p>3. Unggah TTD Digital atau Logo Kustom sesuai kebutuhan Ranting/PAC.</p>
-                        <p>4. Klik <b>Download Gambar (JPG)</b> untuk langsung mencetak atau membagikan surat via HP.</p>
+                    <div v-if="showHelp" class="mt-2 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-lg border space-y-2">
+                        <p>1. <b>Cara Penggunaan:</b> Pilih Preset Template di panel kiri, sesuaikan isi surat, lalu ekspor ke Gambar (JPG).</p>
+                        <p class="font-bold text-emerald-900">2. Tutorial Integrasi Google Form:</p>
+                        <p class="pl-2">
+                            • Buat Google Form dengan pertanyaan: <i>Nama, Tingkat, Wilayah</i>.<br>
+                            • Klik kanan Form &rarr; <b>Inspect (Inspeksi)</b> pada elemen input field untuk menemukan atribut <code class="bg-slate-200 px-1">entry.XXXXXX</code>.<br>
+                            • Ganti endpoint URL di kode dengan link formResponse Anda: <code class="bg-slate-200 px-1">https://docs.google.com/forms/u/0/d/e/.../formResponse</code>.<br>
+                            • Data kunjungan kader otomatis masuk ke Google Spreadsheet Anda!
+                        </p>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between pt-2">
+                <div class="flex items-center justify-between pt-1">
                     <span class="text-[10px] text-slate-400">Developer: <a href="https://github.io/lutfianam" target="_blank" class="underline text-emerald-700 font-bold">Lutfi Anam</a></span>
                     <button @click="submitWelcomeForm" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/30 transition">
                         Mulai Gunakan <i class="fa-solid fa-arrow-right ml-1"></i>
@@ -128,16 +132,16 @@
             </div>
         </div>
 
-        <!-- Navbar Header -->
+        <!-- Navbar Header (Gradient Green with Glassmorphism) -->
         <header class="bg-gradient-to-r from-emerald-950 via-emerald-800 to-green-700 text-white shadow-xl shadow-emerald-900/20 border-b border-emerald-600/30 no-print sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
             <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div class="flex items-center bg-white/10 p-1 md:p-1.5 rounded-xl backdrop-blur-lg border border-white/20 shadow-inner">
                         <div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-emerald-300 shadow-sm">
-                            <img :src="customIpnuLogo || 'https://lutfianam.github.io/si-nura/ipnu.png'" alt="IPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPNU'">
+                            <img :src="customIpnuLogo || 'https://github.io/si-nura/ipnu.png'" alt="IPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPNU'">
                         </div>
                         <div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-emerald-300 shadow-sm -ml-3 md:-ml-4">
-                            <img :src="customIppnuLogo || 'https://lutfianam.github.io/si-nura/ippnu.png'" alt="IPPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPPNU'">
+                            <img :src="customIppnuLogo || 'https://github.io/si-nura/ippnu.png'" alt="IPPNU" class="w-full h-full object-contain p-0.5" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=IPPNU'">
                         </div>
                     </div>
                     <div>
@@ -162,16 +166,16 @@
         <!-- Main Workspace Layout -->
         <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
 
-            <!-- LEFT PANEL: Form Control -->
-            <div class="lg:col-span-5 space-y-4 no-print pb-8">
+            <!-- LEFT PANEL: Form Control (Not sticky on mobile to prevent overlapping) -->
+            <div class="lg:col-span-5 space-y-4 no-print pb-8 lg:sticky lg:top-20">
                 
-                <!-- Preset Template Selection -->
+                <!-- Preset Template Selection (Fully Mapped to Word Presets) -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
-                        <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Preset Template Surat Resmi (22+ Draf)
+                        <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Preset Template Surat Resmi (23+ Draf PPA)
                     </label>
                     <select v-model="selectedPreset" @change="loadPreset" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        <option value="">-- Pilih Template Surat --</option>
+                        <option value="">-- Pilih Template Surat Resmi --</option>
                         <option value="keterangan">1. Surat Keterangan MAKESTA</option>
                         <option value="undangan_bulanan">2. Undangan Rapat Bulanan</option>
                         <option value="edaran">3. Surat Edaran Kewaspadaan</option>
@@ -264,7 +268,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Custom Logos Upload (IPNU & IPPNU) -->
+                            <!-- Dual Custom Logos Upload (IPNU & IPPNU) -->
                             <div class="pt-2 border-t border-slate-200 grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="block text-[11px] font-medium text-slate-700 mb-1"><i class="fa-solid fa-image mr-1"></i> Logo IPNU Custom</label>
@@ -303,11 +307,11 @@
                             </div>
                         </div>
 
-                        <!-- TAB 3: Isi & Detail Acara (With Rich Formatting) -->
+                        <!-- TAB 3: Isi & Detail Acara (With Rich Text Formatting for all inputs) -->
                         <div v-show="activeTab === 'isi'" class="space-y-3">
                             <!-- Universal Formatting Toolbar -->
                             <div class="flex items-center justify-between bg-slate-100 p-2 rounded-lg border border-slate-200">
-                                <span class="text-[11px] font-bold text-slate-700"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i> Format Teks</span>
+                                <span class="text-[11px] font-bold text-slate-700"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i> Format Teks Aktif</span>
                                 <div class="space-x-1">
                                     <button type="button" @click="formatText('bold')" class="px-2.5 py-1 border rounded bg-white hover:bg-slate-50 font-bold text-xs shadow-sm" title="Bold">B</button>
                                     <button type="button" @click="formatText('italic')" class="px-2.5 py-1 border rounded bg-white hover:bg-slate-50 italic text-xs shadow-sm" title="Italic">I</button>
@@ -349,7 +353,7 @@
                             </div>
                         </div>
 
-                        <!-- TAB 4: TTD & Digital Signatures -->
+                        <!-- TAB 4: TTD & Digital Signatures (Editable Titles & Signature Upload Only) -->
                         <div v-show="activeTab === 'ttd'" class="space-y-3">
                             <div class="grid grid-cols-3 gap-2">
                                 <div>
@@ -395,7 +399,7 @@
                             </div>
                         </div>
 
-                        <!-- TAB 5: Customization & Fonts -->
+                        <!-- TAB 5: Customization & Fonts (Kop & Body) -->
                         <div v-show="activeTab === 'kustom'" class="space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
@@ -477,7 +481,7 @@
 
             </div>
 
-            <!-- RIGHT PANEL: Live Document Paper Preview -->
+            <!-- RIGHT PANEL: Live Document Paper Preview with Normalized Scaling -->
             <div class="lg:col-span-7 flex justify-center items-start overflow-x-auto pb-8 pt-4 lg:pt-0">
                 <div class="bg-white shadow-xl rounded-sm surat-document" 
                      id="printable-surat"
@@ -489,8 +493,8 @@
                      }"
                      :class="form.fontSurat">
                     
-                    <!-- Header Kop Surat (Strictly PPA Guidelines) -->
-                    <div class="flex items-start justify-between pb-1">
+                    <!-- Header Kop Surat (Strictly PPA Guidelines - No Border) -->
+                    <div class="flex items-start justify-between pb-0">
                         <!-- Logos -->
                         <div class="flex items-center space-x-2 pt-1 flex-shrink-0">
                             <!-- IPNU Logo -->
@@ -517,7 +521,7 @@
                             <div class="font-bold tracking-wide">{{ form.namaWilayah }}</div>
 
                             <!-- Secretariat Address with Green Circular Icons -->
-                            <div class="normal-case text-black leading-snug mt-1.5 space-y-0.5 font-semibold font-averta text-right flex flex-col items-end" style="font-size: 9px;">
+                            <div class="normal-case text-black leading-snug mt-1 space-y-0.5 font-semibold font-averta text-right flex flex-col items-end" style="font-size: 9px;">
                                 <div>{{ form.alamat }}</div>
                                 <div class="flex items-center justify-end gap-1">
                                     <span>{{ form.telepon }}</span>
@@ -541,8 +545,8 @@
                         </div>
                     </div>
 
-                    <!-- Metadata Surat -->
-                    <div class="mt-[1.5em] mb-[1em]">
+                    <!-- Metadata Surat (Tighter spacing) -->
+                    <div class="mt-4 mb-2">
                         <table class="w-full max-w-md">
                             <tr>
                                 <td class="w-[5em] font-normal align-top">Nomor</td>
@@ -563,7 +567,7 @@
                     </div>
 
                     <!-- Container Isi Surat Menjorok -->
-                    <div class="pl-[12%] space-y-[1.2em] mt-[1.5em] text-justify">
+                    <div class="pl-[10%] space-y-3 mt-3 text-justify">
                         <!-- Kepada Yth -->
                         <div>
                             <div>Kepada Yth.</div>
@@ -572,19 +576,19 @@
                         </div>
 
                         <!-- Salam Pembuka -->
-                        <div class="leading-relaxed mt-[1em]">
+                        <div class="leading-relaxed mt-2">
                             <p class="italic underline">Assalamu'alaikum warahmatullahi wabarakatuh</p>
                             <p class="italic">Bismillahirrahmanirrahim</p>
                         </div>
 
                         <!-- Teks Body & Rich Content -->
-                        <div class="space-y-[1em] leading-relaxed">
+                        <div class="space-y-2 leading-relaxed">
                             <div id="previewPembuka" class="whitespace-pre-wrap"></div>
                             <div id="previewRichContent" class="whitespace-pre-wrap space-y-2"></div>
                         </div>
 
                         <!-- Rincian Acara (Conditional) -->
-                        <div v-if="form.hariAcara || form.tanggalAcara || form.waktuAcara || form.tempatAcara" class="my-[1em] pl-[2em]">
+                        <div v-if="form.hariAcara || form.tanggalAcara || form.waktuAcara || form.tempatAcara" class="my-2 pl-6">
                             <table class="w-full border-collapse">
                                 <tr v-if="form.hariAcara" class="align-top">
                                     <td class="w-[6em]">Hari</td>
@@ -615,19 +619,19 @@
                         </div>
 
                         <!-- Salam Penutup -->
-                        <div class="leading-relaxed mt-[1.5em]">
+                        <div class="leading-relaxed mt-3">
                             <p class="italic underline">Wallahulmuwaffiq illaa aqwamiittharieq</p>
                             <p class="italic">Wassalamu'alaikum warahmatullahi wabarakatuh</p>
                         </div>
 
-                        <!-- Blok Legalisasi TTD -->
-                        <div class="mt-[2em] break-inside-avoid">
-                            <div class="text-right mb-[1em] leading-snug">
+                        <!-- Blok Legalisasi TTD (PPA Compliant Layout) -->
+                        <div class="mt-4 break-inside-avoid">
+                            <div class="text-right mb-2 leading-snug">
                                 <p>{{ form.kotaSurat }}, <span class="underline">{{ form.tglHijriah }}</span></p>
                                 <p>{{ form.tglMasehi }}</p>
                             </div>
                             
-                            <div class="text-center font-bold mb-[2em] leading-snug">
+                            <div class="text-center font-bold mb-4 leading-snug">
                                 <p>MENGETAHUI,</p>
                                 <p class="uppercase"><span>{{ form.tingkat }}</span></p>
                                 <p>IKATAN PELAJAR NAHDLATUL ULAMA</p>
@@ -637,12 +641,12 @@
 
                             <div class="flex justify-between text-center relative px-2">
                                 <!-- IPNU Signature Column -->
-                                <div class="flex flex-col min-h-[7em] items-center w-1/2 relative">
+                                <div class="flex flex-col min-h-[6em] items-center w-1/2 relative">
                                     <p class="font-bold">{{ form.labelIpnu }}</p>
-                                    <div class="mt-auto pt-[3.5em] relative w-full flex flex-col items-center">
+                                    <div class="mt-auto pt-10 relative w-full flex flex-col items-center">
                                         <!-- Digital TTD Overlay -->
-                                        <div v-if="ttdIpnuImg" class="absolute -top-6 z-10">
-                                            <img :src="ttdIpnuImg" alt="TTD IPNU" class="h-16 object-contain mix-blend-multiply">
+                                        <div v-if="ttdIpnuImg" class="absolute -top-2 z-10">
+                                            <img :src="ttdIpnuImg" alt="TTD IPNU" class="h-14 object-contain mix-blend-multiply">
                                         </div>
                                         <p class="font-bold underline uppercase whitespace-nowrap">{{ form.ketuaIpnu }}</p>
                                         <p class="text-[0.9em]">{{ form.niaIpnu }}</p>
@@ -650,12 +654,12 @@
                                 </div>
 
                                 <!-- IPPNU Signature Column -->
-                                <div class="flex flex-col min-h-[7em] items-center w-1/2 relative">
+                                <div class="flex flex-col min-h-[6em] items-center w-1/2 relative">
                                     <p class="font-bold">{{ form.labelIppnu }}</p>
-                                    <div class="mt-auto pt-[3.5em] relative w-full flex flex-col items-center">
+                                    <div class="mt-auto pt-10 relative w-full flex flex-col items-center">
                                         <!-- Digital TTD Overlay -->
-                                        <div v-if="ttdIppnuImg" class="absolute -top-6 z-10">
-                                            <img :src="ttdIppnuImg" alt="TTD IPPNU" class="h-16 object-contain mix-blend-multiply">
+                                        <div v-if="ttdIppnuImg" class="absolute -top-2 z-10">
+                                            <img :src="ttdIppnuImg" alt="TTD IPPNU" class="h-14 object-contain mix-blend-multiply">
                                         </div>
                                         <p class="font-bold underline uppercase whitespace-nowrap">{{ form.ketuaIppnu }}</p>
                                         <p class="text-[0.9em]">{{ form.niaIppnu }}</p>
@@ -1057,7 +1061,8 @@
                     if (!element) return;
                     this.isExporting = true;
                     try {
-                        const canvas = await html2canvas(element, { scale: 2.5, useCORS: true, logging: false });
+                        // Normalize scale to ensure consistent JPG dimensions across Android and PC based on standard DPI
+                        const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
                         const link = document.createElement('a');
                         const safeSubject = (this.form.perihal || 'Dokumen').replace(/[^a-zA-Z0-9]/g, '_');
                         link.download = `Surat_SI-NURA_${safeSubject}.jpg`;
