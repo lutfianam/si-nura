@@ -199,6 +199,7 @@
                         <option value="bantuan_pc">28. Permohonan Bantuan Dana PC/PW</option>
                         <option value="undangan_konferensi">29. Undangan Konferensi / Musyawarah</option>
                         <option value="sk_panitia">30. Surat Keputusan Panitia Kegiatan</option>
+                        <option value="custom_sendiri" class="font-bold text-emerald-700 bg-emerald-50">31. ✍️ Preset Custom (Buat Sendiri)</option>
                     </select>
                 </div>
 
@@ -818,6 +819,17 @@
                     sessionStorage.setItem('sinura_visited', 'true');
                     this.showWelcomeModal = false;
                     
+                    // Sinkronisasi data Modal Welcome ke Form Identitas Surat
+                    if (this.userVisitor.tingkat) {
+                        this.form.tingkat = this.userVisitor.tingkat.toUpperCase();
+                    }
+                    if (this.userVisitor.wilayah) {
+                        this.form.namaWilayah = this.userVisitor.wilayah.toUpperCase();
+                    }
+                    
+                    // Simpan profil ke Local Storage agar tersimpan permanen
+                    localStorage.setItem('ipnu_surat_profile', JSON.stringify(this.form));
+                    
                     try {
                         const formData = new FormData();
                         formData.append('entry.504188686', this.userVisitor.nama);
@@ -1049,6 +1061,12 @@
                         this.form.penerima = 'PANITIA PELAKSANA TERPILIH';
                         this.form.paragrafIsi = 'Menetapkan susunan Panitia Pelaksana Kegiatan Resmi Pimpinan Ranting IPNU IPPNU Desa Purwodadi untuk menjamin suksesnya acara.';
                         this.form.paragrafPenutup = 'Surat Keputusan ini berlaku sejak tanggal ditetapkan.';
+                    } else if (type === 'custom_sendiri') {
+                        this.form.perihal = '...';
+                        this.form.penerima = 'Yth. ...';
+                        this.form.paragrafIsi = 'Tulis isi surat Anda di sini...';
+                        this.form.paragrafPenutup = 'Demikian surat ini dibuat, atas perhatiannya kami sampaikan terima kasih.';
+                        this.form.hariAcara = ''; this.form.tanggalAcara = ''; this.form.waktuAcara = ''; this.form.tempatAcara = '';
                     } else {
                         this.form.perihal = 'SURAT RESMI ORGANISASI';
                         this.form.penerima = 'PENGURUS TERKAIT';
