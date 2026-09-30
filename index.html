@@ -106,20 +106,16 @@
                     </div>
                 </div>
 
-                <!-- Help & Google Form Tutorial Card -->
+                <!-- Help -->
                 <div>
                     <button @click="toggleHelp" type="button" class="text-xs font-semibold text-emerald-700 hover:underline flex items-center">
-                        <i class="fa-solid fa-circle-question mr-1.5"></i> {{ showHelp ? 'Sembunyikan Petunjuk & Tutorial G-Form' : 'Petunjuk Penggunaan & Tutorial G-Form' }}
+                        <i class="fa-solid fa-circle-question mr-1.5"></i> {{ showHelp ? 'Sembunyikan Petunjuk Penggunaan' : 'Petunjuk Penggunaan' }}
                     </button>
                     <div v-if="showHelp" class="mt-2 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-lg border space-y-2">
-                        <p>1. <b>Cara Penggunaan:</b> Pilih Preset Template di panel kiri, sesuaikan isi surat, lalu ekspor ke Gambar (JPG).</p>
-                        <p class="font-bold text-emerald-900">2. Tutorial Integrasi Google Form:</p>
-                        <p class="pl-2">
-                            • Buat Google Form dengan pertanyaan: <i>Nama, Tingkat, Wilayah</i>.<br>
-                            • Klik kanan Form &rarr; <b>Inspect (Inspeksi)</b> pada elemen input field untuk menemukan atribut <code class="bg-slate-200 px-1">entry.XXXXXX</code>.<br>
-                            • Ganti endpoint URL di kode dengan link formResponse Anda: <code class="bg-slate-200 px-1">https://docs.google.com/forms/u/0/d/e/.../formResponse</code>.<br>
-                            • Data kunjungan kader otomatis masuk ke Google Spreadsheet Anda!
-                        </p>
+                        <p>1. <b>Pilih Preset Template</b> di panel kiri untuk otomatis memuat draf surat resmi.</p>
+                        <p>2. Sesuaikan Kop, Nomor, Perihal, serta Isi Surat di tab editor.</p>
+                        <p>3. Unggah TTD Digital atau Logo Kustom sesuai kebutuhan Ranting/PAC.</p>
+                        <p>4. <b></b>Klik Download Gambar (JPG)</b> untuk langsung mencetak atau membagikan surat via HP.</p>
                     </div>
                 </div>
 
@@ -693,7 +689,7 @@
                     customIppnuLogo: null,
                     ttdIpnuImg: null,
                     ttdIppnuImg: null,
-                    googleFormEndpoint: 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSe-example-endpoint/formResponse',
+                    googleFormEndpoint: 'https://docs.google.com/forms/d/e/1FAIpQLSeQaTNnUkeZVqOAJDv3n-uKkra9faw8GJA5oswq6UDHHZqq6Q/formResponse',
                     form: {
                         fontSurat: 'font-arial-narrow',
                         fontSizeIsi: 12,
@@ -816,9 +812,9 @@
                     
                     try {
                         const formData = new FormData();
-                        formData.append('entry.123456', this.userVisitor.nama);
-                        formData.append('entry.234567', this.userVisitor.tingkat);
-                        formData.append('entry.345678', this.userVisitor.wilayah);
+                        formData.append('entry.504188686', this.userVisitor.nama);
+                        formData.append('entry.2063347585', this.userVisitor.tingkat);
+                        formData.append('entry.1417955098', this.userVisitor.wilayah);
                         fetch(this.googleFormEndpoint, {
                             method: 'POST',
                             mode: 'no-cors',
