@@ -65,9 +65,9 @@ Pada halaman utama, pilih kategori dan klik *preset* jenis surat yang ingin dibu
 
 Isi kolom data yang tersedia (Nomor Surat, Lampiran, Tujuan, Tanggal, dan Penandatangan). Format surat akan tersusun secara otomatis sesuai aturan baku.
 
-### 4. Cetak / Simpan PDF
+### 4. Cetak / Download Gambar (JPEG)
 
-1. Klik tombol **Cetak / Export PDF**.
+1. Klik tombol **Cetak / Download Gambar (JPEG)**.
 2. Pada menu *Print Preview* browser HP, pilih **Save as PDF / Simpan sebagai PDF**.
 3. File surat siap dicetak atau dikirimkan langsung via WhatsApp/Email.
 
