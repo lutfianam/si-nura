@@ -1,83 +1,54 @@
-# 📜 SI-NURA (Sistem Informasi Naskah & Undangan Resmi Administrasi)
+# SI-NURA (Sistem Informasi dan Persuratan Ranting) ✉️🟢
 
-> *"Ketertiban administrasi adalah cermin kedisiplinan organisasi; dari lembaran surat yang rapi, terpancar keagungan perjuangan bersama."*
+**SI-NURA** adalah aplikasi generator surat resmi berbasis *web* yang dirancang khusus untuk memfasilitasi administrasi kader IPNU-IPPNU (Ikatan Pelajar Nahdlatul Ulama & Ikatan Pelajar Putri Nahdlatul Ulama) di tingkat Pimpinan Ranting, Komisariat, hingga Anak Cabang. 
 
----
+Aplikasi ini memungkinkan pembuatan surat secara cepat, terstandarisasi sesuai Pedoman Peraturan Administrasi (PPA), dan ramah digunakan melalui perangkat seluler (*mobile-friendly*).
 
-## 🌟 Tentang SI-NURA
-
-**SI-NURA** (**S**istem **I**nformasi **N**askah & **U**ndangan **R**esmi **A**dministrasi) lahir dari sebuah kebutuhan mendasar di lapangan: **mempermudah dan mempercepat alur pembuatan (generator) surat-menyurat organisasi.**
-
-Bagi rekan-rekanita kader akar rumput, khususnya di tingkatan **Pimpinan Ranting (PR)** dan **Pimpinan Anak Cabang (PAC)**, urusan administrasi persuratan sering kali terkendala perangkat atau kerumitan format baku. SI-NURA hadir sebagai **Generator Surat Otomatis** berbasis web yang sangat *mobile-friendly*, memungkinkan sekretaris maupun pengurus menerbitkan surat resmi secara presisi **langsung dari HP** tanpa perlu membuka laptop atau menyusun format dari awal.
-
-Di-host secara langsung melalui **GitHub Pages**, SI-NURA dapat diakses kapan saja, di mana saja, secara gratis, dan tanpa perlu instalasi aplikasi rumit.
+## 🌐 Live Demo
+Aplikasi dapat diakses secara langsung tanpa perlu instalasi melalui tautan berikut:
+**[https://lutfianam.github.com/si-nura](https://lutfianam.github.com/si-nura)**
 
 ---
 
-## ✨ Fitur Utama & Preset Template
-
-SI-NURA menyediakan *preset template* surat yang sudah disesuaikan dengan kebutuhan tata kelola administrasi organisasi di tingkat ranting/komisariat, PAC bahkan PC:
-
-### A. Surat Permohonan & Undangan
-
-* 📨 **Surat Undangan:** Mengundang pengurus, anggota, pembina, atau pihak luar untuk menghadiri kegiatan, rapat, atau peringatan Harlah.
-* 📝 **Surat Permohonan:**
-* **Permohonan Ancol / Penceramah / Pemateri:** Mengundang narasumber atau pengisi acara resmi.
-* **Permohonan Tempat / Fasilitas:** Mengajukan izin penggunaan gedung, sarana, atau prasarana.
-* **Permohonan Bantuan Dana (Proposal):** Mengirimkan proposal permohonan sponsorship atau bantuan finansial.
-* **Permohonan Rekomendasi / Dukungan:** Meminta restu/rekomendasi dari MWC NU, PCNU, atau instansi terkait.
-
-
-
-### B. Surat Ketetapan & Legalitas
-
-* 📜 **Surat Pengesahan (SP):** Surat resmi dari tingkatan di atasnya (misal: PC menerbitkan SP untuk PAC/PR) yang mengesahkan susunan kepengurusan periode tertentu.
-* 👍 **Surat Rekomendasi:** Surat dari struktur kepengurusan untuk memberikan rekomendasi pengesahan kepengurusan di bawahnya sebelum diajukan ke tingkatan atas.
-* 🎖️ **Surat Mandat:** Surat penugasan resmi bagi kader untuk mewakili organisasi dalam acara, forum, pelatihan, atau perwakilan eksternal.
-* 📋 **Surat Tugas:** Mirip dengan surat mandat, diterbitkan untuk menugaskan tim/panitia melaksanakan kerja eksekusi atau lapangan dalam jangka waktu tertentu.
-
-### C. Surat Pemberitahuan & Instruktif
-
-* 📣 **Surat Pemberitahuan:** Menyampaikan informasi mengenai suatu agenda, pergantian jadwal, atau kebijakan ke ranting/PAC/tingkatan di bawahnya.
-* ⚡ **Surat Instruksi:** Surat perintah mengikat dari kepengurusan atas (PP/PW/PC) kepada struktur di bawahnya untuk menjalankan instruksi organisasi secara serentak.
-* 📢 **Surat Edaran (SE):** Surat penyampaian informasi penting atau panduan teknis pelaksanaan agenda nasional/daerah (seperti Edaran Harlah, Edaran Kaderisasi, Edaran Ramadan).
-
-### D. Surat Keterangan & Administratif Internal
-
-* 📑 **Surat Keterangan Active / Kader:** Keterangan bahwa yang bersangkutan adalah anggota/pengurus aktif atau alumni pelatihan kaderisasi (MAKESTA/LAKUT/LAKMAD).
-* 🚗 **Surat Perjalanan Dinas (SPD):** Surat pengantar untuk pengurus yang melakukan perjalanan/kunjungan organisasi ke daerah lain.
-* ✉️ **Surat Balasan / Jawaban:** Surat balasan resmi atas surat permohonan atau konfirmasi dari pihak eksternal/internal.
+## ✨ Fitur Utama
+1. **Lebih dari 30 Preset Surat Resmi:** Mulai dari Surat Keterangan, Undangan, Edaran, Instruksi, Mandat, Keputusan Bersama, hingga Permohonan Rekomendasi/Pengesahan. Tersedia juga opsi **Preset Custom** untuk membuat draf dari nol.
+2. **Kepatuhan Administratif (PPA):** 
+   - Konfigurasi *Kop Surat* tanpa garis bawah dengan tipografi Trajan Pro & Averta.
+   - Isi surat menggunakan *Arial Narrow*.
+   - Tata letak penandatanganan (TTD) hierarkis (Ketua IPNU & IPPNU sejajar).
+3. **Editor Teks Kaya (Rich-Text):** Format isi surat (Tebal, Miring, Garis Bawah) langsung dari halaman draf.
+4. **Penanggalan Otomatis:** Konversi otomatis waktu *real-time* ke penanggalan Masehi dan Hijriah sesuai format Indonesia.
+5. **Kustomisasi Penuh:** 
+   - Unggah Logo IPNU & IPPNU (dengan opsi penghapusan).
+   - Unggah *Digital Signature* (TTD Elektronik).
+   - *Editable Labels* untuk jabatan struktural.
+6. **Ekspor Presisi ke Gambar (JPG):** Render surat berbasis piksel statis (*html2canvas*) yang menjamin proporsi dan kualitas ekspor 100% konsisten baik diakses melalui Android maupun Komputer.
+7. **Penyimpanan Lokal Sesi:** Data profil dan tingkat kepengurusan yang diisi di *Welcome Modal* otomatis tersimpan dan diterapkan pada surat.
 
 ---
 
-## 📱 Panduan Penggunaan Lewat HP (Documentation)
-
-### 1. Buka Tautan Generator
-
-Akses tautan SI-NURA melalui peramban (Chrome/Safari) di HP Anda:
-`https://lutfianam.github.io/si-nura/`
-
-### 2. Pilih Jenis Surat
-
-Pada halaman utama, pilih kategori dan klik *preset* jenis surat yang ingin dibuat (misalnya: *Surat Undangan* atau *Surat Permohonan Tempat*).
-
-### 3. Isi Formulir Draf
-
-Isi kolom data yang tersedia (Nomor Surat, Lampiran, Tujuan, Tanggal, dan Penandatangan). Format surat akan tersusun secara otomatis sesuai aturan baku.
-
-### 4. Cetak / Download Gambar (JPEG)
-
-1. Klik tombol **Cetak / Download Gambar (JPEG)**.
-2. Pada menu *Print Preview* browser HP, pilih **Save as PDF / Simpan sebagai PDF**.
-3. File surat siap dicetak atau dikirimkan langsung via WhatsApp/Email.
+## 🚀 Teknologi yang Digunakan
+* **HTML5 & CSS3** (Struktur & Tata Letak Dasar)
+* **Vue.js (CDN)** (Reaktivitas Data, Templating, & *Two-Way Binding*)
+* **Tailwind CSS (CDN)** (Pemodelan Gaya *Glassmorphism*, *Responsive Grid*, & Tipografi)
+* **Font Awesome** (Ikon Vektor pada Kop Surat)
+* **html2canvas** (Pemrosesan rendering DOM ke ekstensi JPG)
+* **Google Forms API (No-CORS)** (Pengumpulan buku tamu/data pengunjung di latar belakang)
 
 ---
 
-## 👤 Pembuat & Pengembang
+## 👨‍💻 Pengembang
+Proyek ini dikembangkan dan dikelola oleh:
 
-* **Pengembang Utama:** Lutfi Anam
-* **Spesialisasi:** Educational Technology
-* **Kontak & Repositori:** [GitHub Profile](https://github.com/lutfianam)
+**Lutfi Anam**
+- 🌐 Portofolio: [lutfianam.github.com](https://lutfianam.github.com)
+- 📸 Instagram: [@lutf1anam](https://instagram.com/lutf1anam)
+
+Jika Anda memiliki masukan, menemukan *bug*, atau ingin berkontribusi, silakan hubungi melalui platform di atas.
+
+---
+
+*Belajar, Berjuang, Bertaqwa!* 💚💛
 
 ---
 
